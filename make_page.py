@@ -4,6 +4,7 @@ import json
 import re
 import pandas as pd
 import numpy as np
+import statsmodels.api as sm  # 🔥 statsmodels 라이브러리 도입
 
 def read_csv_with_encoding(filepath):
     encodings = ['utf-8', 'cp949', 'euc-kr', 'utf-16']
@@ -18,7 +19,6 @@ def clean_disability_type_string(text):
     if pd.isna(text):
         return ""
     text = str(text).strip().replace('"', '')
-    # [🔥 핵심] 장루요루 명칭 완벽 통일화 정규식
     text = re.sub(r'장루\s*[·,./]?\s*요루|장루\s+요루', '장루요루', text)
     text = re.sub(r'(장애|유형|별|현황|정보|소계)$', '', text)
     return text.strip()
@@ -103,6 +103,43 @@ def load_disabled_data(folder_path):
         
     return pd.concat(combined_list, ignore_index=True).dropna()
 
+# --- [statsmodels 기반 OLS 엔진 수정] ---
+def calculate_ols_with_statsmodels(df_subset):
+    n = len(df_subset)
+    # 기본 구조 설정 (summary_html 추가)
+    default_res = {
+        "r2": "0.00000", "slope": 0, "slope_coef": "0.00000", 
+        "intercept": 0, "intercept_coef": "0.00000", 
+        "p_value": "1.00000", "n": n,
+        "summary_html": "<p>데이터 부족으로 회귀분석 불가</p>" 
+    }
+    
+    if n < 3:
+        return default_res
+        
+    try:
+        X = df_subset['fi_rate']
+        Y = df_subset['disability_ratio']
+        X_with_constant = sm.add_constant(X)
+        model = sm.OLS(Y, X_with_constant)
+        results = model.fit()
+        
+        # statsmodels의 상세 리포트를 HTML로 추출
+        summary_html = results.summary().as_html()
+        
+        return {
+            "r2": f"{results.rsquared:.5f}",
+            "slope": float(results.params.get('fi_rate', 0)),
+            "slope_coef": f"{results.params.get('fi_rate', 0):.5f}",
+            "intercept": float(results.params.get('const', 0)),
+            "intercept_coef": f"{results.params.get('const', 0):.4f}",
+            "p_value": f"{results.pvalues.get('fi_rate', 1.0):.4e}",
+            "n": n,
+            "summary_html": summary_html # 상세 통계 리포트 포함
+        }
+    except Exception:
+        return default_res
+
 def main():
     print("1. 파일 데이터 병합 및 세척 전수 가동...")
     base_folder = './Statistics'
@@ -151,11 +188,51 @@ def main():
     available_years = sorted([int(y) for y in final_data['year'].unique()])
     available_sidos = sorted([str(s) for s in final_data['sido'].unique() if s != '전국'])
     
+    # --- [statsmodels 백엔드 패키징 데이터 연산] ---
+    print("2. [statsmodels] 기반 다차원 OLS 스탯 선행 패키징 연산...")
     frontend_dataset = {}
     unique_types = sorted(final_data['type_sub'].unique())
+    
     for dis_type in unique_types:
-        sub_df = final_data[final_data['type_sub'] == dis_type]
-        frontend_dataset[dis_type] = sub_df[['year', 'sido', 'sigungu', 'calc_type', 'fi_rate', 'disability_ratio']].to_dict(orient='records')
+        frontend_dataset[dis_type] = {}
+        type_df = final_data[final_data['type_sub'] == dis_type]
+        
+        for c_type in ['개편후', '개편전']:
+            frontend_dataset[dis_type][c_type] = {}
+            tc_df = type_df[type_df['calc_type'] == c_type]
+            
+            sido_cases = ['ALL'] + available_sidos
+            for s_case in sido_cases:
+                if s_case == 'ALL':
+                    s_df = tc_df
+                else:
+                    s_df = tc_df[tc_df['sido'].str.contains(s_case) | tc_df['sido'].apply(lambda x: str(x) in s_case)]
+                
+                frontend_dataset[dis_type][c_type][s_case] = {
+                    "records": {},
+                    "stats": {},
+                    "trends": {}
+                }
+                
+                # 1. 전체 연도 통합 분석
+                frontend_dataset[dis_type][c_type][s_case]["records"]["ALL"] = s_df[['year', 'sido', 'sigungu', 'calc_type', 'fi_rate', 'disability_ratio']].to_dict(orient='records')
+                frontend_dataset[dis_type][c_type][s_case]["stats"]["ALL"] = calculate_ols_with_statsmodels(s_df)
+                
+                # 2. 개별 연도별 분석 및 트렌드 데이터 바인딩
+                year_trends = {"slope": [], "intercept": [], "r2": [], "p_value": []}
+                for y in available_years:
+                    y_df = s_df[s_df['year'] == y]
+                    frontend_dataset[dis_type][c_type][s_case]["records"][str(y)] = y_df[['year', 'sido', 'sigungu', 'calc_type', 'fi_rate', 'disability_ratio']].to_dict(orient='records')
+                    
+                    y_stat = calculate_ols_with_statsmodels(y_df)
+                    frontend_dataset[dis_type][c_type][s_case]["stats"][str(y)] = y_stat
+                    
+                    year_trends["slope"].append(y_stat["slope"])
+                    year_trends["intercept"].append(y_stat["intercept"])
+                    year_trends["r2"].append(float(y_stat["r2"]))
+                    year_trends["p_value"].append(float(y_stat["p_value"]))
+                    
+                frontend_dataset[dis_type][c_type][s_case]["trends"] = year_trends
 
     assets_dir = './web_dashboard'
     os.makedirs(assets_dir, exist_ok=True)
@@ -164,7 +241,7 @@ def main():
     with open(os.path.join(assets_dir, 'data_package.js'), 'w', encoding='utf-8') as f:
         f.write(data_js)
 
-    # 반응형 디자인 최적화 CSS
+    # 대시보드 구조 및 자산 파일들(CSS/JS/HTML) 사출 코드는 프론트엔드 최적화 상태 유지
     css_content = """body { font-family: 'Malgun Gothic', sans-serif; margin: 20px; background-color: #f1f5f9; color: #1e293b; }
 .container { max-width: 1550px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
 .header-banner { border-bottom: 3px solid #0284c7; padding-bottom: 15px; margin-bottom: 20px; }
@@ -183,12 +260,11 @@ th { background: #334155; color: white; padding: 10px; position: sticky; top: 0;
 td { padding: 9px; border-bottom: 1px solid #e2e8f0; font-family: monospace; font-weight: 600; }
 tr:hover { background: #f1f5f9; }
 .tab-btn { background: #475569; color: white; padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-.tab-btn.active { background: #10b981; }
+.tab-btn.active { background: #10b981; }#statsmodels-container {max-height: 500px;overflow-y: auto;background: #ffffff;font-size: 11px; /* statsmodels 기본 표가 크므로 폰트 조절 */}#statsmodels-container table {width: 100%;}
 """
     with open(os.path.join(assets_dir, 'dashboard.css'), 'w', encoding='utf-8') as f:
         f.write(css_content)
 
-    # 대시보드 코어 제어 로직 (가변 OLS 스탯 연산 엔진 고도화 포함)
     js_content = """let scatterChart = null;
 let trendChart = null;
 let activeTrendMetric = 'slope';
@@ -211,54 +287,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateDashboard();
 });
 
-function calculateOLS(points) {
-    const n = points.length;
-    // [🔥 핵심 방어] 단일 지자체/소규모 관측 셋 분할 시 NaN 및 무한대 전파 원천 차단 가드 구문
-    if (n < 3) return { r2: "0.00000", slope: 0, slope_coef: "0.00000", intercept: 0, intercept_coef: "0.00000", p_value: "1.00000", n: n };
-    
-    let sumX = 0, sumY = 0, sumXX = 0, sumYY = 0, sumXY = 0;
-    points.forEach(p => { sumX += p.x; sumY += p.y; sumXX += p.x * p.x; sumYY += p.y * p.y; sumXY += p.x * p.y; });
-    
-    const denom = (n * sumXX - sumX * sumX);
-    if(denom === 0) return { r2: "0.00000", slope: 0, slope_coef: "0.00000", intercept: 0, intercept_coef: "0.00000", p_value: "1.00000", n: n };
-    
-    const slope = (n * sumXY - sumX * sumY) / denom;
-    const intercept = (sumY - slope * sumX) / n;
-    
-    let ssTot = 0, ssRes = 0;
-    const yMean = sumY / n;
-    points.forEach(p => { 
-        const pred = slope * p.x + intercept; 
-        ssTot += Math.pow(p.y - yMean, 2); 
-        ssRes += Math.pow(p.y - pred, 2); 
-    });
-    const r2 = ssTot === 0 ? 0 : 1 - (ssRes / ssTot);
-    
-    const dfRes = n - 2;
-    const s2 = ssRes / dfRes;
-    const seSlope = Math.sqrt(s2 / (sumXX - (sumX * sumX / n)));
-    const tStat = seSlope === 0 ? 0 : slope / seSlope;
-    let pValue = 2 * (1 - normalCDF(Math.abs(tStat)));
-    if (isNaN(pValue)) pValue = 1.0;
-
-    return { 
-        r2: r2.toFixed(5), 
-        slope: slope, 
-        slope_coef: slope.toFixed(5), 
-        intercept: intercept, 
-        intercept_coef: intercept.toFixed(4),
-        p_value: pValue < 0.00001 ? pValue.toExponential(4) : pValue.toFixed(5), 
-        n: n 
-    };
-}
-
-function normalCDF(x) {
-    const t = 1 / (1 + 0.2316419 * Math.abs(x));
-    const d = 0.39894228 * Math.exp(-x * x / 2);
-    const prob = d * t * (0.31938153 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
-    return x >= 0 ? 1 - prob : prob;
-}
-
 function changeTrendMetric(metric) {
     activeTrendMetric = metric;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -273,36 +301,22 @@ function updateDashboard() {
     const sliderVal = parseInt(document.getElementById('yearSlider').value);
     const yearLabel = document.getElementById('yearLabel');
     
-    let targetYear = sliderVal === 0 ? null : yearList[sliderVal - 1];
-    yearLabel.innerText = targetYear ? targetYear + "년 고정" : "시점 전체 통합";
+    let timeKey = sliderVal === 0 ? "ALL" : String(yearList[sliderVal - 1]);
+    yearLabel.innerText = sliderVal === 0 ? "시점 전체 통합" : yearList[sliderVal - 1] + "년 고정";
     
-    let baseRecords = rawDataset[selectedType] || [];
-    baseRecords = baseRecords.filter(r => r.calc_type === calcType);
-    if (selectedSido !== "ALL") {
-        baseRecords = baseRecords.filter(r => r.sido.includes(selectedSido) || selectedSido.includes(r.sido));
-    }
-    
-    let filteredRecords = targetYear ? baseRecords.filter(r => r.year === targetYear) : baseRecords;
-
-    const scatterPoints = filteredRecords.map(r => ({ x: r.fi_rate, y: r.disability_ratio, sido: r.sido, sigungu: r.sigungu, year: r.year }));
-    const metrics = calculateOLS(scatterPoints);
+    const node = rawDataset[selectedType]?.[calcType]?.[selectedSido] || { records: {}, stats: {}, trends: {} };
+    const filteredRecords = node.records[timeKey] || [];
+    const metrics = node.stats[timeKey] || { r2: "0.00000", slope: 0, slope_coef: "0.00000", intercept: 0, intercept_coef: "0.00000", p_value: "1.00000", n: 0 };
+    const trends = node.trends || { slope: [], intercept: [], r2: [], p_value: [] };
 
     document.getElementById('top-slope').innerText = metrics.slope_coef;
     document.getElementById('top-intercept').innerText = metrics.intercept_coef;
     document.getElementById('top-r2').innerText = metrics.r2;
     document.getElementById('top-p').innerText = metrics.p_value;
     document.getElementById('top-n').innerText = metrics.n;
+    document.getElementById('statsmodels-container').innerHTML = metrics.summary_html;
 
-    // [복구 완료] 가변 필터 실시간 연동 원본 레포트 명세 테이블 채우기
-    const tableBody = document.getElementById('ols-table-body');
-    tableBody.innerHTML = "";
-    filteredRecords.forEach(r => {
-        let tr = document.createElement('tr');
-        tr.innerHTML = `<td><b>${r.year}년</b></td><td>${r.sido}</td><td>${r.sigungu}</td><td>${r.fi_rate}%</td><td style='color:#0284c7;'>${r.disability_ratio.toFixed(4)}%</td>`;
-        tableBody.appendChild(tr);
-    });
-
-    // 1. 가변 OLS 산점도 시각화 엔진 빌드
+    const scatterPoints = filteredRecords.map(r => ({ x: r.fi_rate, y: r.disability_ratio, sido: r.sido, sigungu: r.sigungu, year: r.year }));
     let linePoints = [];
     if (scatterPoints.length > 0) {
         const xValues = scatterPoints.map(p => p.x);
@@ -324,7 +338,6 @@ function updateDashboard() {
             plugins: {
                 tooltip: {
                     callbacks: {
-                        // [🔥 요구사항 명시] 마우스 오버 시 광역지자체와 기초지자체명을 정밀 결합 출력
                         label: function(context) {
                             const raw = context.raw;
                             if (raw && raw.sido) {
@@ -338,19 +351,7 @@ function updateDashboard() {
         }
     });
 
-    // 2. [🔥 요구사항 명시] 통계 계수 추정 평면(기울기, 절편, 결정계수, P-value)의 연도별 변동 추이 꺾은선 구현
-    const trendLabels = yearList;
-    const trendValues = yearList.map(y => {
-        const yrPoints = baseRecords.filter(r => r.year === y).map(r => ({ x: r.fi_rate, y: r.disability_ratio }));
-        const yrMetrics = calculateOLS(yrPoints);
-        
-        if (activeTrendMetric === 'slope') return yrMetrics.slope;
-        if (activeTrendMetric === 'intercept') return yrMetrics.intercept;
-        if (activeTrendMetric === 'r2') return parseFloat(yrMetrics.r2);
-        if (activeTrendMetric === 'p_value') return parseFloat(yrMetrics.p_value);
-        return null;
-    });
-
+    const trendValues = trends[activeTrendMetric] || [];
     let metricLabel = '기울기 계수(Slope) 변동 추이';
     let lineColor = '#10b981';
     if(activeTrendMetric === 'intercept') { metricLabel = 'Y 절편(Intercept) 변동 추이'; lineColor = '#6366f1'; }
@@ -361,7 +362,7 @@ function updateDashboard() {
     trendChart = new Chart(document.getElementById('trendChart').getContext('2d'), {
         type: 'line',
         data: {
-            labels: trendLabels,
+            labels: yearList,
             datasets: [{
                 label: `${selectedType} (${metricLabel})`,
                 data: trendValues,
@@ -380,8 +381,6 @@ function updateDashboard() {
     with open(os.path.join(assets_dir, 'dashboard.js'), 'w', encoding='utf-8') as f:
         f.write(js_content)
 
-    # 3. 루트 디렉토리 최적화 단일 대시보드 구조 사출
-    print("3. 루트 경로 고정 대시보드 뼈대 배치...")
     html_skeleton = """<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -396,7 +395,7 @@ function updateDashboard() {
 <div class="container">
     <div class="header-banner">
         <h1>📊 지자체 재정자립도 대비 장애인 비율 가변형 OLS 회귀분석 시스템</h1>
-        <div style="font-size:12.5px; color:#64748b; margin-top:5px;">장루요루 명칭 통합 완료 • 다차원 OLS 통계치 선택형 꺾은선 차트 추적 아키텍처</div>
+        <div style="font-size:12.5px; color:#64748b; margin-top:5px;">Python statsmodels 통계 패키징 설계 고도화 완료 • 브라우저 부하 최소화</div>
     </div>
 
     <div class="filter-box">
@@ -426,7 +425,7 @@ function updateDashboard() {
     <div class="metric-dashboard">
         <div class="m-card"><div class="m-title">기울기 계수 (Slope)</div><div class="m-value" id="top-slope">-</div></div>
         <div class="m-card"><div class="m-title">Y 절편 (Intercept)</div><div class="m-value" id="top-intercept">-</div></div>
-        <div class="m-card"><div class="m-title">결정계수 ($R^2$)</div><div class="m-value" id="top-r2">-</div></div>
+        <div class="m-card"><div class="m-title">결정계수 (R²)</div><div class="m-value" id="top-r2">-</div></div>
         <div class="m-card"><div class="m-title">유의확률 (P-value)</div><div class="m-value" id="top-p">-</div></div>
         <div class="m-card"><div class="m-title">유효 관측 샘플수 (N)</div><div class="m-value" id="top-n">-</div></div>
     </div>
@@ -450,21 +449,9 @@ function updateDashboard() {
         </div>
     </div>
 
-    <div class="table-panel">
-        <h3 style="margin:0 0 10px 0; font-size:13.5px; color:#334155;">📋 조건별 필터링 연동 매핑 레포트 원본 명세 테이블</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>분석 기준연도</th>
-                    <th>광역지자체명</th>
-                    <th>기초지자체명</th>
-                    <th>재정자립도(X)</th>
-                    <th>장애인 인구 비율(Y)</th>
-                </tr>
-            </thead>
-            <tbody id="ols-table-body">
-                </tbody>
-        </table>
+    <!-- 기존 테이블 패널 삭제 후 추가 -->
+    <div id="statsmodels-container" class="table-panel">
+        <!-- statsmodels 리포트가 여기에 동적으로 로드됨 -->
     </div>
 </div>
 </body>
@@ -473,7 +460,7 @@ function updateDashboard() {
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html_skeleton)
         
-    print("\n✨ 요구사항 역방향 복구 및 다차원 추이 트래킹 업그레이드 완료!")
+    print("\n✨ statsmodels 통계 엔진 이관 및 대시보드 빌드 성공!")
 
 if __name__ == '__main__':
     main()
