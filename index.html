@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>재정자립도 대비 장애인 비율 통계 분석 시스템</title>
+    <link rel="stylesheet" href="web_dashboard/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="web_dashboard/data_package.js"></script>
+    <script src="web_dashboard/dashboard.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header-banner">
+        <h1>📊 지자체 재정자립도 대비 장애인 비율 가변형 OLS 회귀분석 시스템</h1>
+        <div style="font-size:12.5px; color:#64748b; margin-top:5px;">Python statsmodels 통계 패키징 설계 고도화 완료 • 브라우저 부하 최소화</div>
+    </div>
+
+    <div class="filter-box">
+        <div class="f-group">
+            <label><strong>1. 장애 유형 고정/선택</strong></label>
+            <select id="typeSelect" onchange="updateDashboard()"></select>
+        </div>
+        <div class="f-group">
+            <label><strong>2. 분석 대상 지역 범위</strong></label>
+            <select id="sidoSelect" onchange="updateDashboard()">
+                <option value="ALL">전국 지자체 전체 통합</option>
+            </select>
+        </div>
+        <div class="f-group">
+            <label><strong>3. 세입과목 분류 기준</strong></label>
+            <div style="display:flex; gap:15px; margin-top:8px; font-weight:bold; font-size:13px;">
+                <label><input type="radio" name="calcType" value="개편후" checked onchange="updateDashboard()"> 세입개편 후</label>
+                <label><input type="radio" name="calcType" value="개편전" onchange="updateDashboard()"> 세입개편 전</label>
+            </div>
+        </div>
+        <div class="f-group">
+            <label><strong>4. 시점 제어 슬라이더 (<span id="yearLabel">전체 통합</span>)</strong></label>
+            <input type="range" id="yearSlider" oninput="updateDashboard()">
+        </div>
+    </div>
+
+    <div class="metric-dashboard">
+        <div class="m-card"><div class="m-title">기울기 계수 (Slope)</div><div class="m-value" id="top-slope">-</div></div>
+        <div class="m-card"><div class="m-title">Y 절편 (Intercept)</div><div class="m-value" id="top-intercept">-</div></div>
+        <div class="m-card"><div class="m-title">결정계수 (R²)</div><div class="m-value" id="top-r2">-</div></div>
+        <div class="m-card"><div class="m-title">유의확률 (P-value)</div><div class="m-value" id="top-p">-</div></div>
+        <div class="m-card"><div class="m-title">유효 관측 샘플수 (N)</div><div class="m-value" id="top-n">-</div></div>
+    </div>
+
+    <div class="view-grid">
+        <div class="chart-panel">
+            <h3 style="margin:0 0 10px 0; font-size:13.5px; color:#334155;">🎯 선택 조건별 실시간 가변 OLS 산점도 및 선형 예측선</h3>
+            <canvas id="scatterChart"></canvas>
+        </div>
+        <div class="chart-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; font-size:13.5px; color:#334155;">📈 OLS 추정치 시계열 추적 (연도별 지표 변동 꺾은선 차트)</h3>
+                <div style="display:flex; gap:4px;">
+                    <button id="btn-slope" class="tab-btn active" onclick="changeTrendMetric('slope')">Slope</button>
+                    <button id="btn-intercept" class="tab-btn" onclick="changeTrendMetric('intercept')">Intercept</button>
+                    <button id="btn-r2" class="tab-btn" onclick="changeTrendMetric('r2')">R²</button>
+                    <button id="btn-p_value" class="tab-btn" onclick="changeTrendMetric('p_value')">P-value</button>
+                </div>
+            </div>
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+
+    <!-- 기존 테이블 패널 삭제 후 추가 -->
+    <div id="statsmodels-container" class="table-panel">
+        <!-- statsmodels 리포트가 여기에 동적으로 로드됨 -->
+    </div>
+</div>
+</body>
+</html>
