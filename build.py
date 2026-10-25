@@ -283,12 +283,12 @@ def parse_birth_rate(path: Path):
 
 
 def fit_multivariate(obs: list[dict], scope: str, region: str,
-                     year: str | int, mode: str, raw_group: list[str]):
-    """Autism registration rate (%) ~ fiscal fraction [0,1] + TFR [births/woman]."""
+                     year: str | int, mode: str, raw_group: list[str], dtype: str = "자폐성"):
+    """Selected disability registration rate (%) ~ fiscal fraction [0,1] + TFR."""
     valid = [r for r in obs if r.get(mode) is not None
              and r.get("fertility") is not None
-             and r.get("rates", {}).get("자폐성") is not None]
-    result = {"scope": scope, "region": region, "year": year, "mode": mode,
+             and r.get("rates", {}).get(dtype) is not None]
+    result = {"scope": scope, "region": region, "year": year, "mode": mode, "type": dtype,
               "n": len(valid), "intercept": None, "fiscal_coef": None,
               "fertility_coef": None, "r2": None, "adj_r2": None,
               "p_fiscal": None, "p_fertility": None, "p_model": None,
@@ -297,7 +297,7 @@ def fit_multivariate(obs: list[dict], scope: str, region: str,
     if len(valid) < 4:
         result["warning"] = "절편과 두 독립변수 추정에는 4개 이상의 유효 관측치가 필요합니다."
         return result
-    z = np.asarray([[r[mode], r["fertility"], r["rates"]["자폐성"]] for r in valid], dtype=float)
+    z = np.asarray([[r[mode], r["fertility"], r["rates"][dtype]] for r in valid], dtype=float)
     if not np.isfinite(z).all():
         result["warning"] = "유효하지 않은 수치가 포함되었습니다."
         return result
@@ -326,7 +326,7 @@ def fit_multivariate(obs: list[dict], scope: str, region: str,
                   fertility_ci=[finite(ci[2, 0]), finite(ci[2, 1])],
                   se_fiscal=finite(model.bse[1]), se_fertility=finite(model.bse[2]),
                   vif=finite(vif), raw=raw)
-    raw_group.append(f"\n{'=' * 80}\nscope={scope}, region={region}, year={year}, mode={mode}, n={len(valid)}\n" + raw + "\n")
+    raw_group.append(f"\n{'=' * 80}\nscope={scope}, region={region}, year={year}, type={dtype}, mode={mode}, n={len(valid)}\n" + raw + "\n")
     return result
 
 
@@ -344,38 +344,43 @@ def build_multivariate(stats: Path, out: Path, detail: list[dict], province_rows
         r["fertility"] = totals.get((r["year"], r["province"]))
         if r["fertility"] is None:
             missing_province.append({"year": r["year"], "province": r["province"]})
-    # Only fit the relevant response (자폐성). All 3 inputs must be present.
-    years_counts = {}
+    # Every disability category is modeled independently. Missing source categories
+    # remain missing: e.g. hearing+language combined in Gyeonggi until 2017.
     for year in YEARS:
         yr = [r for r in detail if r["year"] == year]
         yr_prov = [r for r in province_rows if r["year"] == year]
-        years_counts[year] = {"municipal": len(yr), "province": len(yr_prov)}
+        by_prov = {prov: [r for r in yr if r["province"] == prov] for prov in PROVINCES}
         for mode in MODES:
             models, dumps = [], []
-            models.append(fit_multivariate(yr, "municipal", "전국", year, mode, dumps))
-            for province in PROVINCES:
-                models.append(fit_multivariate([r for r in yr if r["province"] == province],
-                                               "municipal", province, year, mode, dumps))
-            models.append(fit_multivariate(yr_prov, "provincial", "전국", year, mode, dumps))
+            for dtype in TYPES:
+                models.append(fit_multivariate(yr, "municipal", "전국", year, mode, dumps, dtype))
+                for province in PROVINCES:
+                    models.append(fit_multivariate(by_prov[province], "municipal", province,
+                                                   year, mode, dumps, dtype))
+                models.append(fit_multivariate(yr_prov, "provincial", "전국", year, mode, dumps, dtype))
             write_json(out / "data" / f"multi_models_{year}_{mode}.json", models)
             (out / "raw" / f"MULTI_{year}_{mode}.txt").write_text("".join(dumps), encoding="utf-8")
-    pooled = []
-    history = []
+            print(f"  다중회귀 {year} {mode}: {len(models)} models", flush=True)
+    pooled, history = [], []
+    grouped = defaultdict(list)
+    for r in detail:
+        grouped[(r["province"], r["district"])].append(r)
     for mode in MODES:
         dumps = []
-        pooled.append(fit_multivariate(detail, "municipal", "전국", "전기간", mode, dumps))
-        for province in PROVINCES:
-            subset = [r for r in detail if r["province"] == province]
-            pooled.append(fit_multivariate(subset, "municipal", province, "전기간", mode, dumps))
-        pooled.append(fit_multivariate(province_rows, "provincial", "전국", "전기간", mode, dumps))
+        for dtype in TYPES:
+            pooled.append(fit_multivariate(detail, "municipal", "전국", "전기간", mode, dumps, dtype))
+            for province in PROVINCES:
+                subset = [r for r in detail if r["province"] == province]
+                pooled.append(fit_multivariate(subset, "municipal", province,
+                                               "전기간", mode, dumps, dtype))
+            pooled.append(fit_multivariate(province_rows, "provincial", "전국", "전기간", mode, dumps, dtype))
         (out / "raw" / f"MULTI_pooled_{mode}.txt").write_text("".join(dumps), encoding="utf-8")
-        local_groups = defaultdict(list)
-        for r in detail:
-            local_groups[(r["province"], r["district"])].append(r)
         dumps = []
-        for (province, district), rlist in sorted(local_groups.items()):
-            history.append(fit_multivariate(rlist, "local_history", province + "|" + district,
-                                            "전기간", mode, dumps))
+        for (province, district), rlist in sorted(grouped.items()):
+            for dtype in TYPES:
+                history.append(fit_multivariate(rlist, "local_history",
+                                                province + "|" + district,
+                                                "전기간", mode, dumps, dtype))
         (out / "raw" / f"MULTI_local_history_{mode}.txt").write_text("".join(dumps), encoding="utf-8")
     write_json(out / "data" / "multi_models_pooled.json", pooled)
     write_json(out / "data" / "multi_models_local_history.json", history)
@@ -390,28 +395,30 @@ def build_multivariate(stats: Path, out: Path, detail: list[dict], province_rows
              "province_total": len(province_rows),
              "unmatched_municipal": missing_local, "unmatched_province": missing_province,
              "duplicate_birth_rows": duplicates,
-             "model": "자폐성 등록률(전체 주민등록인구 대비 %) = 절편 + β재정 × 재정자립도(0~1) + β출산 × 합계출산율(명/여성)",
-             "note": "연도별 또는 시점 통합 OLS. 같은 해 합계출산율은 전체 연령의 자폐성 등록자와 출생 코호트가 달라 인과효과를 의미하지 않음. 통합모형은 지역 반복관측, 연도효과, 지역 고정효과를 통제하지 않음."}
+             "model": "선택 장애유형 등록률(전체 주민등록인구 대비 %) = 절편 + β재정 × 재정자립도(0~1) + β출산 × 합계출산율(명/여성)",
+             "types": TYPES, "models_yearly": len(YEARS)*len(MODES)*(len(PROVINCES)+2)*len(TYPES),
+             "models_pooled": len(pooled), "models_local_history": len(history),
+             "note": "연도별 또는 시점 통합 OLS. 같은 해 합계출산율은 전체 연령의 장애등록자와 출생 코호트가 달라 인과효과를 의미하지 않음. 통합모형은 지역 반복관측, 연도효과, 지역 고정효과를 통제하지 않음."}
     write_json(out / "data" / "multi_quality.json", audit)
     print(f"  다중회귀: 기초 출산율 결합 {audit['municipal_matched']}/{len(detail)}, "
           f"광역 {audit['province_matched']}/{len(province_rows)}, "
-          f"연도별 모형 {len(YEARS)*len(MODES)*(len(PROVINCES)+2)}건, "
+          f"연도별 모형 {len(YEARS)*len(MODES)*(len(PROVINCES)+2)*len(TYPES)}건, "
           f"통합 {len(pooled)}건, 개별 시계열 {len(history)}건", flush=True)
     return audit
 
 def fit_birth_ols(obs: list[dict], scope: str, region: str,
-                  year: str | int, raw_group: list[str]):
-    """Simple OLS: autism disability registration (%) = b0 + b1 * TFR.
+                  year: str | int, raw_group: list[str], dtype: str = "자폐성"):
+    """Simple OLS: selected disability registration (%) = b0 + b1 * TFR.
 
     Fiscal independence does not enter this model. Records with a missing
-    autism rate or TFR are excluded, never imputed as zero.
+    disability rate or TFR are excluded, never imputed as zero.
     """
-    valid = [(float(r["fertility"]), float(r["rates"]["자폐성"])) for r in obs
-             if r.get("fertility") is not None and r.get("rates", {}).get("자폐성") is not None
+    valid = [(float(r["fertility"]), float(r["rates"][dtype])) for r in obs
+             if r.get("fertility") is not None and r.get("rates", {}).get(dtype) is not None
              and math.isfinite(float(r["fertility"]))
-             and math.isfinite(float(r["rates"]["자폐성"]))]
+             and math.isfinite(float(r["rates"][dtype]))]
     n = len(valid)
-    model_result = {"scope": scope, "region": region, "year": year,
+    model_result = {"scope": scope, "region": region, "year": year, "type": dtype,
                     "n": n, "slope": None, "intercept": None, "r2": None,
                     "adj_r2": None, "p": None, "slope_ci": None,
                     "warning": None, "raw": None}
@@ -431,7 +438,7 @@ def fit_birth_ols(obs: list[dict], scope: str, region: str,
                         r2=finite(result.rsquared), adj_r2=finite(result.rsquared_adj),
                         p=finite_probability(result.pvalues[1]),
                         slope_ci=[finite(ci[1, 0]), finite(ci[1, 1])], raw=raw)
-    raw_group.append(f"\n{'=' * 80}\nscope={scope}, region={region}, year={year}, n={n}\n" + raw + "\n")
+    raw_group.append(f"\n{'=' * 80}\nscope={scope}, region={region}, year={year}, type={dtype}, n={n}\n" + raw + "\n")
     return model_result
 
 
@@ -441,41 +448,50 @@ def build_birth_ols(out: Path, detail: list[dict], province_rows: list[dict]):
     for year in YEARS:
         year_rows = [r for r in detail if r["year"] == year]
         year_provinces = [r for r in province_rows if r["year"] == year]
+        by_prov = {prov: [r for r in year_rows if r["province"] == prov] for prov in PROVINCES}
         models, dumps = [], []
-        models.append(fit_birth_ols(year_rows, "municipal", "전국", year, dumps))
-        for province in PROVINCES:
-            models.append(fit_birth_ols([r for r in year_rows if r["province"] == province],
-                                        "municipal", province, year, dumps))
-        models.append(fit_birth_ols(year_provinces, "provincial", "전국", year, dumps))
+        for dtype in TYPES:
+            models.append(fit_birth_ols(year_rows, "municipal", "전국", year, dumps, dtype))
+            for province in PROVINCES:
+                models.append(fit_birth_ols(by_prov[province], "municipal", province,
+                                            year, dumps, dtype))
+            models.append(fit_birth_ols(year_provinces, "provincial", "전국", year, dumps, dtype))
         write_json(out / "data" / f"birth_ols_models_{year}.json", models)
         (out / "raw" / f"BIRTH_OLS_{year}.txt").write_text("".join(dumps), encoding="utf-8")
         model_count += len(models)
+        print(f"  출산율 OLS {year}: {len(models)} models", flush=True)
     pooled, history = [], []
     dumps = []
-    pooled.append(fit_birth_ols(detail, "municipal", "전국", "전기간", dumps))
-    for province in PROVINCES:
-        pooled.append(fit_birth_ols([r for r in detail if r["province"] == province],
-                                    "municipal", province, "전기간", dumps))
-    pooled.append(fit_birth_ols(province_rows, "provincial", "전국", "전기간", dumps))
+    for dtype in TYPES:
+        pooled.append(fit_birth_ols(detail, "municipal", "전국", "전기간", dumps, dtype))
+        for province in PROVINCES:
+            pooled.append(fit_birth_ols([r for r in detail if r["province"] == province],
+                                        "municipal", province, "전기간", dumps, dtype))
+        pooled.append(fit_birth_ols(province_rows, "provincial", "전국", "전기간", dumps, dtype))
     (out / "raw" / "BIRTH_OLS_pooled.txt").write_text("".join(dumps), encoding="utf-8")
     groups = defaultdict(list)
     for r in detail:
         groups[(r["province"], r["district"])].append(r)
     dumps = []
     for (province, district), obs in sorted(groups.items()):
-        history.append(fit_birth_ols(obs, "local_history", province + "|" + district,
-                                     "전기간", dumps))
+        for dtype in TYPES:
+            history.append(fit_birth_ols(obs, "local_history", province + "|" + district,
+                                         "전기간", dumps, dtype))
     (out / "raw" / "BIRTH_OLS_local_history.txt").write_text("".join(dumps), encoding="utf-8")
     write_json(out / "data" / "birth_ols_models_pooled.json", pooled)
     write_json(out / "data" / "birth_ols_models_local_history.json", history)
     audit = {
-        "model": "자폐성 장애 등록률(%) = 절편 + 기울기 × 합계출산율(명/여성)",
-        "x": "합계출산율(명/여성)", "y": "주민등록인구 대비 자폐성 장애인 등록률(%)",
+        "model": "선택 장애유형 등록률(%) = 절편 + 기울기 × 합계출산율(명/여성)",
+        "types": TYPES,
+        "x": "합계출산율(명/여성)", "y": "주민등록인구 대비 선택한 장애유형 등록률(%)",
         "year_models": model_count, "pooled_models": len(pooled),
         "local_history_models": len(history),
         "usable_municipal": sum(r.get("fertility") is not None and
                                r.get("rates", {}).get("자폐성") is not None for r in detail),
-        "caveat": "동일 연도의 합계출산율과 전체 연령층 자폐성 장애 등록률 간 탐색적 연관성입니다. "
+        "usable_by_type": {t: sum(r.get("fertility") is not None and
+                                 r.get("rates", {}).get(t) is not None for r in detail)
+                           for t in TYPES},
+        "caveat": "동일 연도의 합계출산율과 전체 연령층 장애유형별 등록률 간 탐색적 연관성입니다. "
                   "출생 코호트·지역 반복 관측·시간 추세를 통제하지 않으며 인과관계를 뜻하지 않습니다."
     }
     write_json(out / "data" / "birth_ols_quality.json", audit)
