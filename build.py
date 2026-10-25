@@ -500,6 +500,95 @@ def build_birth_ols(out: Path, detail: list[dict], province_rows: list[dict]):
     return audit
 
 
+def fit_fiscal_birth_ols(obs: list[dict], scope: str, region: str,
+                         year: str | int, mode: str, raw_group: list[str]):
+    """Fit fertility (births/woman) ~ fiscal-independence fraction (0..1).
+
+    Both sides must exist.  Do not modify the source CSV or replace missing values
+    with zero.  Province observations use published totals rather than averages.
+    """
+    valid = [(float(r[mode]), float(r["fertility"])) for r in obs
+             if r.get(mode) is not None and r.get("fertility") is not None
+             and math.isfinite(float(r[mode])) and math.isfinite(float(r["fertility"]))]
+    result = {"scope": scope, "region": region, "year": year, "mode": mode,
+              "n": len(valid), "slope": None, "intercept": None,
+              "r2": None, "adj_r2": None, "p": None, "slope_ci": None,
+              "warning": None, "raw": None}
+    if len(valid) < 3:
+        result["warning"] = "유효 관측치가 3개 미만이어서 OLS를 적합할 수 없습니다."
+        return result
+    xs, ys = np.asarray(valid, dtype=float).T
+    if np.ptp(xs) < 1e-12:
+        result["warning"] = "재정자립도가 모두 같아서 기울기를 추정할 수 없습니다."
+        return result
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            model = sm.OLS(ys, sm.add_constant(xs, has_constant="add")).fit()
+            raw = str(model.summary(xname=["const", "fiscal_independence_0to1"]))
+        ci = model.conf_int(alpha=.05)
+        result.update(intercept=finite(model.params[0]), slope=finite(model.params[1]),
+                      r2=finite(model.rsquared), adj_r2=finite(model.rsquared_adj),
+                      p=finite_probability(model.pvalues[1]),
+                      slope_ci=[finite(ci[1, 0]), finite(ci[1, 1])], raw=raw)
+        raw_group.append(f"\n{'=' * 80}\nscope={scope}, region={region}, year={year}, mode={mode}, n={len(valid)}\n"+raw+"\n")
+    except (ValueError, np.linalg.LinAlgError) as ex:
+        result["warning"] = f"회귀 계산 오류: {ex}"
+    return result
+
+
+def build_fiscal_birth_ols(out: Path, detail: list[dict], province_rows: list[dict]):
+    """Static files for year-by-year, pooled and district 2014-22 fertility/fiscal OLS."""
+    yearly_count = 0
+    for year in YEARS:
+        year_local = [r for r in detail if r["year"] == year]
+        year_prov = [r for r in province_rows if r["year"] == year]
+        groups = {prov: [r for r in year_local if r["province"] == prov]
+                  for prov in PROVINCES}
+        for mode in MODES:
+            models, raws = [], []
+            models.append(fit_fiscal_birth_ols(year_local, "municipal", "전국", year, mode, raws))
+            for prov in PROVINCES:
+                models.append(fit_fiscal_birth_ols(groups[prov], "municipal", prov, year, mode, raws))
+            models.append(fit_fiscal_birth_ols(year_prov, "provincial", "전국", year, mode, raws))
+            write_json(out / "data" / f"fiscal_birth_models_{year}_{mode}.json", models)
+            (out / "raw" / f"FISCAL_BIRTH_{year}_{mode}.txt").write_text("".join(raws), encoding="utf-8")
+            yearly_count += len(models)
+    pooled, history = [], []
+    groups = defaultdict(list)
+    for r in detail:
+        groups[(r["province"], r["district"])].append(r)
+    for mode in MODES:
+        raws = []
+        pooled.append(fit_fiscal_birth_ols(detail, "municipal", "전국", "전기간", mode, raws))
+        for prov in PROVINCES:
+            pooled.append(fit_fiscal_birth_ols([r for r in detail if r["province"] == prov],
+                                                "municipal", prov, "전기간", mode, raws))
+        pooled.append(fit_fiscal_birth_ols(province_rows, "provincial", "전국", "전기간", mode, raws))
+        (out / "raw" / f"FISCAL_BIRTH_pooled_{mode}.txt").write_text("".join(raws), encoding="utf-8")
+        raws = []
+        for (prov, district), records in sorted(groups.items()):
+            history.append(fit_fiscal_birth_ols(records, "local_history", prov + "|" + district,
+                                                 "전기간", mode, raws))
+        (out / "raw" / f"FISCAL_BIRTH_local_history_{mode}.txt").write_text("".join(raws), encoding="utf-8")
+    write_json(out / "data" / "fiscal_birth_models_pooled.json", pooled)
+    write_json(out / "data" / "fiscal_birth_models_local_history.json", history)
+    audit = {
+        "model": "합계출산율(명/여성) = β₀ + β₁ × 재정자립도(0~1) + ε",
+        "source": ["Statistics/Financial Independence.csv", "Statistics/Birth rate.csv"],
+        "yearly_models": yearly_count, "pooled_models": len(pooled),
+        "local_history_models": len(history),
+        "municipal_complete": {mode: sum(r.get(mode) is not None and r.get("fertility") is not None
+                                         for r in detail) for mode in MODES},
+        "provincial_complete": {mode: sum(r.get(mode) is not None and r.get("fertility") is not None
+                                          for r in province_rows) for mode in MODES},
+        "caveat": "같은 지역의 같은 연도 자료를 이용한 단순 OLS입니다. 지역 간 차이·동시기 연관성을 기술하며 인과효과는 아닙니다. 전체 기간 통합은 연도·지역 고정효과 및 반복관측을 보정하지 않습니다.",
+    }
+    write_json(out / "data" / "fiscal_birth_quality.json", audit)
+    print(f"  재정자립도 × 합계출산율 OLS: 연도별 {yearly_count}건, 통합 {len(pooled)}건, 기초 시계열 {len(history)}건", flush=True)
+    return audit
+
+
 def write_project_root_entrypoint(base: Path, out: Path):
     """Keep the full project at GitHub Pages / (root) without moving site/data.
 
@@ -640,6 +729,7 @@ def build(base: Path, out: Path):
     write_json(out / "data" / "models_local_history.json", hist_models)
     birth_audit = build_multivariate(stats, out, detail, province_rows)
     birth_ols_audit = build_birth_ols(out, detail, province_rows)
+    fiscal_birth_audit = build_fiscal_birth_ols(out, detail, province_rows)
     write_json(out / "data" / "municipalities.json", detail)
     write_json(out / "data" / "provinces.json", province_rows)
 
@@ -647,7 +737,8 @@ def build(base: Path, out: Path):
     meta = {"years": list(YEARS), "types": TYPES, "provinces": PROVINCES,
             "districts": regions, "modes": {"before": "세입과목 개편 전", "after": "세입과목 개편 후"},
             "units": {"fiscal": "ratio_0to1", "disability": "percent", "fertility": "births_per_woman"},
-            "fiscal_transformation": "재정자립도 원본(0~100) / 100. 원본 CSV 비수정."}
+            "fiscal_transformation": "재정자립도 원본(0~100) / 100. 원본 CSV 비수정.",
+            "new_analysis": "합계출산율(명/여성) ~ 재정자립도(0~1), 개편 전후"}
     write_json(out / "data" / "meta.json", meta)
     quality = {"observations": len(detail), "province_observations": len(province_rows),
                "partially_reported_types": missing_types_report,
@@ -657,6 +748,7 @@ def build(base: Path, out: Path):
                "type_note": "경기도 2014-2017 청각·언어는 통합 유형이며 청각/언어로 강제 분리하지 않음. 일부 지역-연도의 특정 유형은 원본 공란이므로 전체 등록인원 합계는 제공된 유형의 합산값이며 소폭 과소계상 가능.",
                "special_note": "세종/제주는 광역합계 관측치를 기초 단일 관측치로 사용. 다른 시군구와 완전히 동일한 행정계층은 아님.",
                "multivariate": birth_audit, "birth_ols": birth_ols_audit,
+               "fiscal_birth_ols": fiscal_birth_audit,
                "fiscal_unit_note": "원본 재정자립도(0~100)를 Python 빌드시 100으로 나눠 0~1로 계산하며 CSV 원본은 수정하지 않음.",
                "method_note": "단순 OLS(상수항 포함); 연도 통합분석은 반복 측정과 연도 교란을 보정하지 않으므로 인과관계로 해석하지 말 것."}
     write_json(out / "data" / "quality.json", quality)

@@ -1,0 +1,476 @@
+
+================================================================================
+scope=municipal, region=전국, year=2020, mode=before, n=228
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.094
+Model:                            OLS   Adj. R-squared:                  0.090
+Method:                 Least Squares   F-statistic:                     23.47
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):           2.36e-06
+Time:                        15:35:15   Log-Likelihood:                -13.695
+No. Observations:                 228   AIC:                             31.39
+Df Residuals:                     226   BIC:                             38.25
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        1.1274      0.038     29.861      0.000       1.053       1.202
+fiscal_independence_0to1    -0.6537      0.135     -4.845      0.000      -0.920      -0.388
+==============================================================================
+Omnibus:                       58.804   Durbin-Watson:                   1.405
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              163.477
+Skew:                           1.112   Prob(JB):                     3.17e-36
+Kurtosis:                       6.502   Cond. No.                         8.39
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=서울특별시, year=2020, mode=before, n=25
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.010
+Model:                            OLS   Adj. R-squared:                 -0.033
+Method:                 Least Squares   F-statistic:                    0.2425
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.627
+Time:                        15:35:15   Log-Likelihood:                 29.657
+No. Observations:                  25   AIC:                            -55.31
+Df Residuals:                      23   BIC:                            -52.88
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.6637      0.043     15.508      0.000       0.575       0.752
+fiscal_independence_0to1    -0.0544      0.110     -0.492      0.627      -0.283       0.174
+==============================================================================
+Omnibus:                        1.621   Durbin-Watson:                   2.153
+Prob(Omnibus):                  0.445   Jarque-Bera (JB):                1.161
+Skew:                          -0.521   Prob(JB):                        0.560
+Kurtosis:                       2.826   Cond. No.                         8.12
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=부산광역시, year=2020, mode=before, n=16
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.502
+Model:                            OLS   Adj. R-squared:                  0.466
+Method:                 Least Squares   F-statistic:                     14.11
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):            0.00213
+Time:                        15:35:15   Log-Likelihood:                 9.7035
+No. Observations:                  16   AIC:                            -15.41
+Df Residuals:                      14   BIC:                            -13.86
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.3330      0.114      2.910      0.011       0.088       0.578
+fiscal_independence_0to1     1.6527      0.440      3.756      0.002       0.709       2.596
+==============================================================================
+Omnibus:                        1.913   Durbin-Watson:                   2.291
+Prob(Omnibus):                  0.384   Jarque-Bera (JB):                0.992
+Skew:                          -0.610   Prob(JB):                        0.609
+Kurtosis:                       2.964   Cond. No.                         13.2
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=대구광역시, year=2020, mode=before, n=8
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.583
+Model:                            OLS   Adj. R-squared:                  0.514
+Method:                 Least Squares   F-statistic:                     8.395
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0274
+Time:                        15:35:15   Log-Likelihood:                 3.6317
+No. Observations:                   8   AIC:                            -3.263
+Df Residuals:                       6   BIC:                            -3.104
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.1597      0.223      0.716      0.501      -0.386       0.705
+fiscal_independence_0to1     2.6153      0.903      2.897      0.027       0.407       4.824
+==============================================================================
+Omnibus:                        0.993   Durbin-Watson:                   1.109
+Prob(Omnibus):                  0.609   Jarque-Bera (JB):                0.494
+Skew:                          -0.549   Prob(JB):                        0.781
+Kurtosis:                       2.477   Cond. No.                         15.2
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=인천광역시, year=2020, mode=before, n=10
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.032
+Model:                            OLS   Adj. R-squared:                 -0.090
+Method:                 Least Squares   F-statistic:                    0.2603
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.624
+Time:                        15:35:15   Log-Likelihood:                 2.3520
+No. Observations:                  10   AIC:                           -0.7040
+Df Residuals:                       8   BIC:                          -0.09886
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.9654      0.174      5.539      0.001       0.563       1.367
+fiscal_independence_0to1    -0.3138      0.615     -0.510      0.624      -1.732       1.105
+==============================================================================
+Omnibus:                        1.285   Durbin-Watson:                   1.601
+Prob(Omnibus):                  0.526   Jarque-Bera (JB):                0.774
+Skew:                           0.629   Prob(JB):                        0.679
+Kurtosis:                       2.478   Cond. No.                         9.72
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=광주광역시, year=2020, mode=before, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.100
+Model:                            OLS   Adj. R-squared:                 -0.200
+Method:                 Least Squares   F-statistic:                    0.3321
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.605
+Time:                        15:35:15   Log-Likelihood:                 6.8880
+No. Observations:                   5   AIC:                            -9.776
+Df Residuals:                       3   BIC:                            -10.56
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.7059      0.165      4.276      0.023       0.181       1.231
+fiscal_independence_0to1     0.5182      0.899      0.576      0.605      -2.343       3.380
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   1.502
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.423
+Skew:                          -0.634   Prob(JB):                        0.810
+Kurtosis:                       2.353   Cond. No.                         26.3
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=대전광역시, year=2020, mode=before, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.595
+Model:                            OLS   Adj. R-squared:                  0.460
+Method:                 Least Squares   F-statistic:                     4.405
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.127
+Time:                        15:35:15   Log-Likelihood:                 8.5672
+No. Observations:                   5   AIC:                            -13.13
+Df Residuals:                       3   BIC:                            -13.92
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.6149      0.085      7.229      0.005       0.344       0.886
+fiscal_independence_0to1     0.8779      0.418      2.099      0.127      -0.453       2.209
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   2.605
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.458
+Skew:                           0.349   Prob(JB):                        0.795
+Kurtosis:                       1.692   Cond. No.                         17.2
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=울산광역시, year=2020, mode=before, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.331
+Model:                            OLS   Adj. R-squared:                  0.108
+Method:                 Least Squares   F-statistic:                     1.486
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.310
+Time:                        15:35:15   Log-Likelihood:                 2.3558
+No. Observations:                   5   AIC:                           -0.7117
+Df Residuals:                       3   BIC:                            -1.493
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.6221      0.312      1.992      0.140      -0.372       1.616
+fiscal_independence_0to1     1.1910      0.977      1.219      0.310      -1.918       4.300
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   1.721
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.752
+Skew:                           0.932   Prob(JB):                        0.687
+Kurtosis:                       2.629   Cond. No.                         12.3
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경기도, year=2020, mode=before, n=31
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.013
+Model:                            OLS   Adj. R-squared:                 -0.021
+Method:                 Least Squares   F-statistic:                    0.3702
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.548
+Time:                        15:35:16   Log-Likelihood:                 24.109
+No. Observations:                  31   AIC:                            -44.22
+Df Residuals:                      29   BIC:                            -41.35
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.9545      0.069     13.781      0.000       0.813       1.096
+fiscal_independence_0to1    -0.1020      0.168     -0.608      0.548      -0.445       0.241
+==============================================================================
+Omnibus:                        8.148   Durbin-Watson:                   1.603
+Prob(Omnibus):                  0.017   Jarque-Bera (JB):                6.515
+Skew:                           0.947   Prob(JB):                       0.0385
+Kurtosis:                       4.206   Cond. No.                         9.40
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=강원특별자치도, year=2020, mode=before, n=18
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.226
+Model:                            OLS   Adj. R-squared:                  0.178
+Method:                 Least Squares   F-statistic:                     4.680
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0460
+Time:                        15:35:16   Log-Likelihood:                 4.0924
+No. Observations:                  18   AIC:                            -4.185
+Df Residuals:                      16   BIC:                            -2.404
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        1.5034      0.188      7.978      0.000       1.104       1.903
+fiscal_independence_0to1    -2.3881      1.104     -2.163      0.046      -4.728      -0.048
+==============================================================================
+Omnibus:                        1.335   Durbin-Watson:                   1.823
+Prob(Omnibus):                  0.513   Jarque-Bera (JB):                0.207
+Skew:                           0.108   Prob(JB):                        0.901
+Kurtosis:                       3.480   Cond. No.                         23.5
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=충청북도, year=2020, mode=before, n=11
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.004
+Model:                            OLS   Adj. R-squared:                 -0.107
+Method:                 Least Squares   F-statistic:                   0.03710
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.852
+Time:                        15:35:16   Log-Likelihood:                 3.1954
+No. Observations:                  11   AIC:                            -2.391
+Df Residuals:                       9   BIC:                            -1.595
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.9725      0.192      5.077      0.001       0.539       1.406
+fiscal_independence_0to1     0.1726      0.896      0.193      0.852      -1.855       2.200
+==============================================================================
+Omnibus:                        0.391   Durbin-Watson:                   1.251
+Prob(Omnibus):                  0.822   Jarque-Bera (JB):                0.102
+Skew:                           0.194   Prob(JB):                        0.950
+Kurtosis:                       2.734   Cond. No.                         15.5
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=충청남도, year=2020, mode=before, n=15
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.070
+Model:                            OLS   Adj. R-squared:                 -0.001
+Method:                 Least Squares   F-statistic:                    0.9800
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.340
+Time:                        15:35:16   Log-Likelihood:                 10.662
+No. Observations:                  15   AIC:                            -17.32
+Df Residuals:                      13   BIC:                            -15.91
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.9560      0.084     11.353      0.000       0.774       1.138
+fiscal_independence_0to1     0.3531      0.357      0.990      0.340      -0.417       1.124
+==============================================================================
+Omnibus:                        0.996   Durbin-Watson:                   1.875
+Prob(Omnibus):                  0.608   Jarque-Bera (JB):                0.841
+Skew:                           0.342   Prob(JB):                        0.657
+Kurtosis:                       2.064   Cond. No.                         11.3
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=전북특별자치도, year=2020, mode=before, n=14
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.335
+Model:                            OLS   Adj. R-squared:                  0.280
+Method:                 Least Squares   F-statistic:                     6.058
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0300
+Time:                        15:35:16   Log-Likelihood:               -0.50048
+No. Observations:                  14   AIC:                             5.001
+Df Residuals:                      12   BIC:                             6.279
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        1.8056      0.275      6.557      0.000       1.206       2.406
+fiscal_independence_0to1    -3.8647      1.570     -2.461      0.030      -7.286      -0.444
+==============================================================================
+Omnibus:                        1.369   Durbin-Watson:                   2.239
+Prob(Omnibus):                  0.504   Jarque-Bera (JB):                1.104
+Skew:                           0.532   Prob(JB):                        0.576
+Kurtosis:                       2.128   Cond. No.                         22.3
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=전라남도, year=2020, mode=before, n=22
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.096
+Model:                            OLS   Adj. R-squared:                  0.051
+Method:                 Least Squares   F-statistic:                     2.121
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.161
+Time:                        15:35:16   Log-Likelihood:                -7.3890
+No. Observations:                  22   AIC:                             18.78
+Df Residuals:                      20   BIC:                             20.96
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        1.5063      0.175      8.629      0.000       1.142       1.870
+fiscal_independence_0to1    -1.3696      0.940     -1.456      0.161      -3.331       0.592
+==============================================================================
+Omnibus:                       16.873   Durbin-Watson:                   1.853
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               19.280
+Skew:                           1.552   Prob(JB):                     6.51e-05
+Kurtosis:                       6.376   Cond. No.                         12.8
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경상북도, year=2020, mode=before, n=23
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.212
+Model:                            OLS   Adj. R-squared:                  0.174
+Method:                 Least Squares   F-statistic:                     5.650
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0270
+Time:                        15:35:16   Log-Likelihood:                 6.4511
+No. Observations:                  23   AIC:                            -8.902
+Df Residuals:                      21   BIC:                            -6.631
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        1.3315      0.102     13.051      0.000       1.119       1.544
+fiscal_independence_0to1    -1.2277      0.517     -2.377      0.027      -2.302      -0.154
+==============================================================================
+Omnibus:                        0.693   Durbin-Watson:                   2.513
+Prob(Omnibus):                  0.707   Jarque-Bera (JB):                0.750
+Skew:                           0.300   Prob(JB):                        0.687
+Kurtosis:                       2.351   Cond. No.                         13.4
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경상남도, year=2020, mode=before, n=18
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.013
+Model:                            OLS   Adj. R-squared:                 -0.049
+Method:                 Least Squares   F-statistic:                    0.2093
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.653
+Time:                        15:35:16   Log-Likelihood:                 16.241
+No. Observations:                  18   AIC:                            -28.48
+Df Residuals:                      16   BIC:                            -26.70
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.9179      0.071     12.920      0.000       0.767       1.069
+fiscal_independence_0to1     0.1370      0.299      0.457      0.653      -0.498       0.772
+==============================================================================
+Omnibus:                        2.550   Durbin-Watson:                   2.445
+Prob(Omnibus):                  0.279   Jarque-Bera (JB):                1.108
+Skew:                          -0.007   Prob(JB):                        0.575
+Kurtosis:                       1.784   Cond. No.                         12.8
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=provincial, region=전국, year=2020, mode=before, n=17
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.181
+Model:                            OLS   Adj. R-squared:                  0.127
+Method:                 Least Squares   F-statistic:                     3.322
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0884
+Time:                        15:35:16   Log-Likelihood:                 9.8445
+No. Observations:                  17   AIC:                            -15.69
+Df Residuals:                      15   BIC:                            -14.02
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        1.1361      0.117      9.702      0.000       0.886       1.386
+fiscal_independence_0to1    -0.4350      0.239     -1.823      0.088      -0.944       0.074
+==============================================================================
+Omnibus:                       14.901   Durbin-Watson:                   1.851
+Prob(Omnibus):                  0.001   Jarque-Bera (JB):               13.028
+Skew:                           1.565   Prob(JB):                      0.00148
+Kurtosis:                       5.932   Cond. No.                         8.34
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

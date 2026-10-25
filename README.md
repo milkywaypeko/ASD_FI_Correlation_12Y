@@ -2,7 +2,7 @@
 
 > **전체 프로젝트를 GitHub 저장소 루트에 그대로 올릴 수 있습니다.** 최상위 `index.html`과 `.nojekyll`이 자동 생성됩니다. GitHub Pages를 `main / (root)`로 설정하세요. `site/index.html`은 독립적으로도 동작합니다.
 
-**다섯 개 웹페이지:** `site/index.html`(장애유형×재정자립도), `site/results.html`(회귀 통합), `site/multivariate.html`(재정자립도 + 출산율 → **선택 장애유형 등록률** 다중회귀), **`site/birth-ols.html`(출산율 → **선택 장애유형 등록률** 단순 OLS)**, `site/quality.html`(품질). 프로젝트 최상위 `index.html`에서도 메인 대시보드가 직접 표시됩니다. 모든 하위 페이지는 `site/`의 파일을 참조합니다.
+**여섯 개 웹페이지:** `site/index.html`(장애유형×재정자립도), `site/results.html`(회귀 통합), `site/multivariate.html`(재정자립도 + 출산율 → **선택 장애유형 등록률** 다중회귀), **`site/birth-ols.html`(출산율 → **선택 장애유형 등록률** 단순 OLS)**, **`site/fiscal-birth.html`(재정자립도 → 출산율 단순 OLS)**, `site/quality.html`(품질). 프로젝트 최상위 `index.html`에서도 메인 대시보드가 직접 표시됩니다. 모든 하위 페이지는 `site/`의 파일을 참조합니다.
 
 `./Statistics` 디렉터리의 주민등록인구·재정자립도·장애인 등록현황 CSV를 이용해 `statsmodels.OLS`를 수행하고 **GitHub Pages용 정적 웹사이트**를 출력하는 Python 프로젝트입니다. 제공된 실제 20개 CSV(출산율 추가)를 포함합니다. 원본 파일은 변경하지 않습니다.
 
@@ -12,7 +12,7 @@
 disability-fiscal-dashboard/
 ├── index.html                      # GitHub Pages /(root) 진입점 · 빌드시 생성
 ├── .nojekyll                       # GitHub Pages Jekyll 파일 제외 방지
-├── build.py                        # 자료 정규화 + 3종 OLS + 정적 파일 빌드
+├── build.py                        # 자료 정규화 + 4종 OLS + 정적 파일 빌드
 ├── requirements.txt
 ├── Statistics/
 │   ├── Birth rate.csv                 # 합계출산율
@@ -27,6 +27,7 @@ disability-fiscal-dashboard/
     ├── results.html                # 연도×지역 단순회귀 표 및 계수 변화 그래프
     ├── multivariate.html           # 장애유형별 등록률 + 재정자립도 + 출산율 다중회귀
     ├── birth-ols.html              # 신규: 출산율 단일변수 + 장애유형별 등록률 OLS
+    ├── fiscal-birth.html          # 신규: 재정자립도(0~1) → 합계출산율 OLS
     ├── quality.html                # 자료 결합 방법 및 누락 감사
     ├── .nojekyll
     ├── assets/
@@ -45,6 +46,10 @@ disability-fiscal-dashboard/
     │   ├── birth_ols_models_2014.json       # 신규: 연도별 단순 OLS
     │   ├── birth_ols_models_pooled.json     # 신규: 9개년 통합 모형
     │   ├── birth_ols_models_local_history.json
+    │   ├── fiscal_birth_models_2022_after.json  # 개편 전/후별 연도 모형
+    │   ├── fiscal_birth_models_pooled.json
+    │   ├── fiscal_birth_models_local_history.json
+    │   ├── fiscal_birth_quality.json
     │   ├── birth_ols_quality.json
     │   ├── models_pooled.json       # 전 시점 통합 OLS
     │   ├── models_local_history.json# 개별 기초지자체 2014~2022 시계열 OLS
@@ -65,7 +70,7 @@ python build.py
 python -m http.server 8000  # 프로젝트 최상위에서 실행
 ```
 
-브라우저에서 `http://localhost:8000`(최상위 `index.html`) 또는 `http://localhost:8000/site/birth-ols.html`(새 단순회귀)를 엽니다. 재현 실행 시 기존 `site/data/`와 `site/raw/`의 계산 결과를 덮어씁니다. 다른 경로를 쓰려면:
+브라우저에서 `http://localhost:8000`(최상위 `index.html`) 또는 `http://localhost:8000/site/birth-ols.html`(장애유형 단순회귀), `http://localhost:8000/site/fiscal-birth.html`(재정자립도×출산율 단순회귀)를 엽니다. 재현 실행 시 기존 `site/data/`와 `site/raw/`의 계산 결과를 덮어씁니다. 다른 경로를 쓰려면:
 
 ```bash
 python build.py --input /path/to/project --output /path/to/public
@@ -154,3 +159,12 @@ python build.py --input /path/to/project --output /path/to/public
 모형의 종속변수는 각 장애유형의 **장애등록인원 / 주민등록인구 × 100(%)**입니다. 전체 장애유형을 100%로 둔 **유형 구성비**가 아닙니다. 같은 연도의 합계출산율과 장애유형별 전체 연령층 등록률 사이의 연관성이며, 특정 장애가 해당 연도의 출산으로 발생했다는 뜻이 아닙니다. 특히 유형별 등록제도·진단 접근성·연령구성·이동 및 공통 시간추세를 통제하지 않고, 통합 모형에서는 지자체 반복관측도 고려하지 않으므로 유의한 회귀계수도 인과효과로 해석할 수 없습니다. 많은 유형·지역·연도를 반복적으로 검정하므로 **다중 검정으로 인한 우연한 유의성**에 주의하세요. 0~1 재정자립도 회귀계수의 변화폭은 X가 1.0만큼(100%p) 변하는 경우이며 1%p(0.01) 변화에 대한 기대 변화폭은 계수의 0.01배입니다.
 
 `site/data/multi_quality.json`과 `site/data/birth_ols_quality.json`에 사용 가능한 관측치 수와 모델 수를 기록합니다. 조건을 만족하는 표본이 부족하거나 설계행렬이 특이행렬이면 0이 아니라 **추정 불가**로 표기합니다. 현재 GitHub Pages 구성은 정적 사이트이며, 분석은 `python build.py` 실행 중 statsmodels로 사전 계산됩니다.
+
+## 재정자립도 × 출산율 (신규 페이지)
+
+- 주소: `site/fiscal-birth.html` (GitHub Pages에서는 `/저장소명/site/fiscal-birth.html`)
+- 식: **합계출산율 (명/여성) = 절편 + 기울기 × 재정자립도 (0~1)**. 기본값: 개편 후, 2022년, 전국 기초지자체.
+- 선택: 개편 전·후, 2014~2022년 슬라이더 및 전체 통합, 전국/광역/기초 시계열. 광역 단위는 공식 광역 '소계' 재정자립도와 합계출산율을 씁니다.
+- 화면: 지자체 툴팁, 산점도+OLS 회귀선, 기울기/절편/R²/p-값 연도별 그래프, 결과표, 관측치와 회귀 결과 CSV, statsmodels Raw 원문.
+- 통계량과 원문은 `site/data/fiscal_birth_models_*.json`, `site/raw/FISCAL_BIRTH_*.txt`에 저장됩니다. 원본 CSV는 변경하지 않습니다.
+- 해석: 기울기는 **재정자립도 1.0 증가당 합계출산율의 변화**입니다. 원본 비율의 10%p 변화에 해당하는 효과는 기울기의 0.1배입니다. 인과효과 추정이 아닙니다.
