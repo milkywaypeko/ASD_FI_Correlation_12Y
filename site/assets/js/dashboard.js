@@ -90,9 +90,9 @@
           title:items=>{const r=items[0]?.raw;return r?.province?`${r.province} · ${r.district}`:'OLS 추정선';},
           label:ctx=>{let r=ctx.raw;if(!r||!r.province)return `예측 등록률 ${Lab.numeric(ctx.parsed.y)}%`;
             return [`${r.year}년 · ${st.dtype==='전체'?'전체 장애인':st.dtype}`,
-              `재정자립도 (${meta.modes[st.mode]}): ${Lab.numeric(ctx.parsed.x)}%`,
+              `재정자립도 (${meta.modes[st.mode]}): ${Lab.numeric(ctx.parsed.x)}`,
               `장애인 등록률: ${Lab.numeric(ctx.parsed.y,5)}%`, ...(r.missingTypes.length?['원본 장애유형 일부 공란: '+r.missingTypes.join(', ')]:[])];}
-        }}},scales:{x:{type:'linear',title:{display:true,text:`재정자립도 (%, ${meta.modes[st.mode]})`,color:'#637386',font:{size:12}},
+        }}},scales:{x:{type:'linear',title:{display:true,text:`재정자립도 (0~1, ${meta.modes[st.mode]})`,color:'#637386',font:{size:12}},
           grid:{color:'#eef1f5'},ticks:{color:'#8d9aab'}},y:{title:{display:true,text:`${st.dtype==='전체'?'전체 장애인':st.dtype} 등록률 (%)`,color:'#637386'},grid:{color:'#eef1f5'},ticks:{color:'#8d9aab'}}}}});
       const warning=current?.warning|| (current?.slope==null?'해당 조건에서는 유효한 OLS 모형을 계산할 수 없습니다.':'');
       Lab.text('scatter-status',`${view.length}개 관측치 표시. ${warning}`);
@@ -106,7 +106,7 @@
       E('point-prev').disabled=st.page===0;E('point-next').disabled=(st.page+1)*15>=filtered.length;
     }
     E('export-csv').addEventListener('click',()=>{
-      Lab.exportCsv('disability_observations.csv',['연도','광역','기초','인구','장애유형','유형등록인원','등록률(%)',`재정자립도_${st.mode}(%)`],
+      Lab.exportCsv('disability_observations.csv',['연도','광역','기초','인구','장애유형','유형등록인원','등록률(%)',`재정자립도_${st.mode}(0~1)`],
         view.map(r=>[r.year,r.province,r.district,r.population,st.dtype,st.dtype==='전체'?r.disabled:r.counts[st.dtype],r.rates[st.dtype],r[st.mode]]));
     });
     async function renderTrends(){

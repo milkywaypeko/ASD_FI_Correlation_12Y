@@ -1,0 +1,22 @@
+/* Multivariable regression page additions; base theme in style.css. */
+.model-intro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 23px}
+.model-intro>div{border:1px solid #e5eaf0;background:#fff;border-radius:12px;padding:14px 17px;display:flex;flex-direction:column;gap:7px}
+.model-intro strong{color:#218c88;font-size:11px;font-weight:800}
+.model-intro span{font-size:12px;color:#526277;line-height:1.6}
+.multi-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+.multi-kpis .kpi{min-height:121px}
+.multi-kpis .kpi-value{font-size:clamp(20px,2.2vw,30px)}
+.formula-text{font-size:15px;color:#2f5269;font-family:ui-monospace,Menlo,Consolas,monospace;line-height:1.8;margin:12px 0 0;overflow-wrap:anywhere}
+.coefficient-detail{display:flex;gap:18px;flex-wrap:wrap;border-top:1px solid #e9eff1;padding-top:19px;margin-top:15px}
+.coefficient-detail>div{display:flex;flex-direction:column;gap:7px;min-width:175px;flex:1}
+.coefficient-detail span{font-size:11px;color:#718095}.coefficient-detail strong{font-size:14px;color:#283f53;letter-spacing:-.01em}
+.double-plots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.double-plots .panel{min-width:0}.double-plots .panel h2{font-size:16px}
+.chart-multivariate{height:360px}
+.plot-explanation{margin:-6px 0 28px;padding:0 8px;font-size:11px;line-height:1.9;color:#687c8c}
+.multi-trends{grid-template-columns:repeat(3,minmax(0,1fr))}
+.model-table-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0 15px}
+.multi-table{min-width:1110px}.multi-table td{font-variant-numeric:tabular-nums}
+.multi-table .model-link{cursor:pointer}
+@media(max-width:1140px){.multi-trends{grid-template-columns:repeat(2,minmax(0,1fr))}.double-plots{grid-template-columns:1fr}}
+@media(max-width:780px){.model-intro{grid-template-columns:1fr}.multi-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.multi-trends{grid-template-columns:1fr}.model-table-controls{align-items:start;flex-direction:column}.chart-multivariate{height:315px}}

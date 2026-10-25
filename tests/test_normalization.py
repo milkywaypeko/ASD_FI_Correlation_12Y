@@ -3,7 +3,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from build import clean_disability_type, clean_province, clean_district, read_rows, parse_disability, parse_population, parse_fiscal, finite_probability
+from build import clean_disability_type, clean_province, clean_district, read_rows, parse_disability, parse_population, parse_fiscal, parse_birth_rate, fit_multivariate, finite_probability
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -38,6 +38,40 @@ class TestDataIntegration(unittest.TestCase):
         self.assertIn('청각',new)
         self.assertIn('언어',new)
 
+    def test_fiscal_normalization_is_non_destructive(self):
+        filename=ROOT/'Statistics'/'Financial Independence.csv'
+        before=filename.read_bytes()
+        local, totals, _=parse_fiscal(filename)
+        self.assertEqual(local[(2022,'서울특별시','종로구','after')],0.4751)
+        self.assertEqual(local[(2022,'서울특별시','종로구','before')],0.5122)
+        self.assertTrue(all(0 <= x <= 1 for x in list(local.values())+list(totals.values())))
+        self.assertEqual(before,filename.read_bytes(), '재정 CSV 원본을 덮어쓰면 안 됩니다.')
+
+    def test_birth_matching_and_special_province(self):
+        local, totals, dup = parse_birth_rate(ROOT/'Statistics'/'Birth rate.csv')
+        self.assertFalse(dup)
+        disability, _, _=parse_disability(ROOT/'Statistics'/'Disability')
+        self.assertEqual(len(set(disability).difference(local)),0)
+        for year in range(2014,2023):
+            for province in ('제주특별자치도','세종특별자치시'):
+                self.assertEqual(local[(year,province,province)],totals[(year,province)])
+        self.assertEqual(local[(2022,'서울특별시','종로구')],0.477)
+
+    def test_multivariate_exact_coefficients_on_synthetic_data(self):
+        samples=[]
+        for i in range(1,9):
+            fiscal=i/12
+            fertility=(i*i%7+5)/7
+            samples.append({'before':fiscal,'after':fiscal,'fertility':fertility,
+                            'rates':{'자폐성':0.5+2*fiscal-0.4*fertility}})
+        raw=[]
+        model=fit_multivariate(samples,'municipal','전국',2022,'after',raw)
+        self.assertAlmostEqual(model['intercept'],0.5,places=9)
+        self.assertAlmostEqual(model['fiscal_coef'],2,places=9)
+        self.assertAlmostEqual(model['fertility_coef'],-0.4,places=9)
+        self.assertAlmostEqual(model['r2'],1,places=9)
+        self.assertEqual(len(raw),1)
+
     def test_south_korea_population_join_and_special_units(self):
         population,totals,errors=parse_population(ROOT/'Statistics'/'Resident population.csv')
         self.assertFalse(errors)
@@ -49,7 +83,7 @@ class TestDataIntegration(unittest.TestCase):
         self.assertFalse(errors)
         self.assertEqual(fiscal[(2022,'제주특별자치도','제주특별자치도','before')],
                          subtotals[(2022,'제주특별자치도','before')])
-        self.assertEqual(fiscal[(2014,'충청북도','청주시','before')],35.97)
+        self.assertEqual(fiscal[(2014,'충청북도','청주시','before')],0.3597)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,493 @@
+
+================================================================================
+scope=municipal, region=전국, year=2019, mode=before, n=228
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.301
+Model:                            OLS   Adj. R-squared:                  0.295
+Method:                 Least Squares   F-statistic:                     48.49
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):           3.10e-18
+Time:                        14:58:54   Log-Likelihood:                 662.66
+No. Observations:                 228   AIC:                            -1319.
+Df Residuals:                     225   BIC:                            -1309.
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0525      0.005     11.567      0.000       0.044       0.061
+fiscal_independence_0to1     0.0466      0.007      6.773      0.000       0.033       0.060
+total_fertility_rate        -0.0162      0.003     -4.793      0.000      -0.023      -0.010
+==============================================================================
+Omnibus:                       17.738   Durbin-Watson:                   1.620
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               20.358
+Skew:                           0.619   Prob(JB):                     3.80e-05
+Kurtosis:                       3.782   Cond. No.                         13.2
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=서울특별시, year=2019, mode=before, n=25
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.219
+Model:                            OLS   Adj. R-squared:                  0.149
+Method:                 Least Squares   F-statistic:                     3.093
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0655
+Time:                        14:58:54   Log-Likelihood:                 71.509
+No. Observations:                  25   AIC:                            -137.0
+Df Residuals:                      22   BIC:                            -133.4
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0343      0.031      1.096      0.285      -0.031       0.099
+fiscal_independence_0to1     0.0545      0.022      2.478      0.021       0.009       0.100
+total_fertility_rate         0.0085      0.042      0.202      0.842      -0.078       0.095
+==============================================================================
+Omnibus:                        3.065   Durbin-Watson:                   1.653
+Prob(Omnibus):                  0.216   Jarque-Bera (JB):                2.307
+Skew:                           0.741   Prob(JB):                        0.316
+Kurtosis:                       2.872   Cond. No.                         22.6
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=부산광역시, year=2019, mode=before, n=16
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.411
+Model:                            OLS   Adj. R-squared:                  0.321
+Method:                 Least Squares   F-statistic:                     4.538
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0320
+Time:                        14:58:54   Log-Likelihood:                 54.795
+No. Observations:                  16   AIC:                            -103.6
+Df Residuals:                      13   BIC:                            -101.3
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0347      0.009      3.914      0.002       0.016       0.054
+fiscal_independence_0to1     0.0583      0.035      1.667      0.119      -0.017       0.134
+total_fertility_rate         0.0081      0.015      0.534      0.603      -0.025       0.041
+==============================================================================
+Omnibus:                        3.048   Durbin-Watson:                   3.004
+Prob(Omnibus):                  0.218   Jarque-Bera (JB):                1.118
+Skew:                           0.537   Prob(JB):                        0.572
+Kurtosis:                       3.723   Cond. No.                         22.3
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=대구광역시, year=2019, mode=before, n=8
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.111
+Model:                            OLS   Adj. R-squared:                 -0.244
+Method:                 Least Squares   F-statistic:                    0.3134
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.744
+Time:                        14:58:54   Log-Likelihood:                 28.387
+No. Observations:                   8   AIC:                            -50.77
+Df Residuals:                       5   BIC:                            -50.54
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0554      0.012      4.712      0.005       0.025       0.086
+fiscal_independence_0to1    -0.0257      0.057     -0.448      0.673      -0.173       0.122
+total_fertility_rate        -0.0025      0.016     -0.153      0.884      -0.045       0.040
+==============================================================================
+Omnibus:                        0.511   Durbin-Watson:                   3.226
+Prob(Omnibus):                  0.774   Jarque-Bera (JB):                0.233
+Skew:                          -0.340   Prob(JB):                        0.890
+Kurtosis:                       2.514   Cond. No.                         26.1
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=인천광역시, year=2019, mode=before, n=10
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.589
+Model:                            OLS   Adj. R-squared:                  0.471
+Method:                 Least Squares   F-statistic:                     5.011
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0446
+Time:                        14:58:54   Log-Likelihood:                 34.144
+No. Observations:                  10   AIC:                            -62.29
+Df Residuals:                       7   BIC:                            -61.38
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0611      0.024      2.595      0.036       0.005       0.117
+fiscal_independence_0to1    -0.0743      0.026     -2.856      0.024      -0.136      -0.013
+total_fertility_rate         0.0149      0.020      0.736      0.485      -0.033       0.063
+==============================================================================
+Omnibus:                        3.475   Durbin-Watson:                   0.936
+Prob(Omnibus):                  0.176   Jarque-Bera (JB):                1.026
+Skew:                          -0.025   Prob(JB):                        0.599
+Kurtosis:                       1.432   Cond. No.                         16.4
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=광주광역시, year=2019, mode=before, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.152
+Model:                            OLS   Adj. R-squared:                 -0.696
+Method:                 Least Squares   F-statistic:                    0.1790
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.848
+Time:                        14:58:54   Log-Likelihood:                 19.600
+No. Observations:                   5   AIC:                            -33.20
+Df Residuals:                       2   BIC:                            -34.37
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0667      0.039      1.696      0.232      -0.102       0.236
+fiscal_independence_0to1    -0.0559      0.095     -0.588      0.616      -0.465       0.354
+total_fertility_rate        -0.0006      0.043     -0.013      0.991      -0.184       0.183
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   2.061
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.295
+Skew:                          -0.155   Prob(JB):                        0.863
+Kurtosis:                       1.851   Cond. No.                         38.3
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=대전광역시, year=2019, mode=before, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.729
+Model:                            OLS   Adj. R-squared:                  0.457
+Method:                 Least Squares   F-statistic:                     2.684
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.271
+Time:                        14:58:54   Log-Likelihood:                 18.342
+No. Observations:                   5   AIC:                            -30.68
+Df Residuals:                       2   BIC:                            -31.86
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                       -0.0692      0.086     -0.801      0.507      -0.441       0.302
+fiscal_independence_0to1     0.0072      0.103      0.070      0.951      -0.437       0.452
+total_fertility_rate         0.1600      0.116      1.375      0.303      -0.341       0.661
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   0.623
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.347
+Skew:                          -0.538   Prob(JB):                        0.841
+Kurtosis:                       2.288   Cond. No.                         51.5
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=울산광역시, year=2019, mode=before, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.024
+Model:                            OLS   Adj. R-squared:                 -0.951
+Method:                 Least Squares   F-statistic:                   0.02489
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.976
+Time:                        14:58:54   Log-Likelihood:                 16.145
+No. Observations:                   5   AIC:                            -26.29
+Df Residuals:                       2   BIC:                            -27.46
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0464      0.042      1.097      0.387      -0.136       0.229
+fiscal_independence_0to1     0.0138      0.077      0.179      0.875      -0.317       0.345
+total_fertility_rate         0.0019      0.042      0.045      0.968      -0.177       0.181
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   3.484
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.646
+Skew:                          -0.229   Prob(JB):                        0.724
+Kurtosis:                       1.301   Cond. No.                         17.9
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경기도, year=2019, mode=before, n=31
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.215
+Model:                            OLS   Adj. R-squared:                  0.159
+Method:                 Least Squares   F-statistic:                     3.837
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0337
+Time:                        14:58:54   Log-Likelihood:                 93.517
+No. Observations:                  31   AIC:                            -181.0
+Df Residuals:                      28   BIC:                            -176.7
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0796      0.020      4.001      0.000       0.039       0.120
+fiscal_independence_0to1     0.0274      0.018      1.522      0.139      -0.009       0.064
+total_fertility_rate        -0.0366      0.018     -2.079      0.047      -0.073      -0.001
+==============================================================================
+Omnibus:                        3.135   Durbin-Watson:                   1.360
+Prob(Omnibus):                  0.209   Jarque-Bera (JB):                2.201
+Skew:                           0.650   Prob(JB):                        0.333
+Kurtosis:                       3.126   Cond. No.                         17.8
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=강원특별자치도, year=2019, mode=before, n=18
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.060
+Model:                            OLS   Adj. R-squared:                 -0.066
+Method:                 Least Squares   F-statistic:                    0.4769
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.630
+Time:                        14:58:54   Log-Likelihood:                 49.325
+No. Observations:                  18   AIC:                            -92.65
+Df Residuals:                      15   BIC:                            -89.98
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0815      0.043      1.913      0.075      -0.009       0.172
+fiscal_independence_0to1    -0.0736      0.110     -0.670      0.513      -0.308       0.161
+total_fertility_rate        -0.0215      0.022     -0.974      0.345      -0.068       0.026
+==============================================================================
+Omnibus:                        7.810   Durbin-Watson:                   1.890
+Prob(Omnibus):                  0.020   Jarque-Bera (JB):                4.975
+Skew:                           1.182   Prob(JB):                       0.0831
+Kurtosis:                       4.023   Cond. No.                         45.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=충청북도, year=2019, mode=before, n=11
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.174
+Model:                            OLS   Adj. R-squared:                 -0.032
+Method:                 Least Squares   F-statistic:                    0.8427
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.465
+Time:                        14:58:54   Log-Likelihood:                 34.376
+No. Observations:                  11   AIC:                            -62.75
+Df Residuals:                       8   BIC:                            -61.56
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0095      0.026      0.371      0.721      -0.050       0.069
+fiscal_independence_0to1     0.0359      0.048      0.749      0.476      -0.075       0.146
+total_fertility_rate         0.0206      0.023      0.899      0.395      -0.032       0.074
+==============================================================================
+Omnibus:                        1.533   Durbin-Watson:                   1.620
+Prob(Omnibus):                  0.465   Jarque-Bera (JB):                0.767
+Skew:                          -0.034   Prob(JB):                        0.682
+Kurtosis:                       1.708   Cond. No.                         19.4
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=충청남도, year=2019, mode=before, n=15
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.112
+Model:                            OLS   Adj. R-squared:                 -0.036
+Method:                 Least Squares   F-statistic:                    0.7559
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.491
+Time:                        14:58:54   Log-Likelihood:                 46.467
+No. Observations:                  15   AIC:                            -86.93
+Df Residuals:                      12   BIC:                            -84.81
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0310      0.027      1.160      0.269      -0.027       0.089
+fiscal_independence_0to1     0.0339      0.031      1.086      0.299      -0.034       0.102
+total_fertility_rate         0.0038      0.025      0.150      0.883      -0.052       0.059
+==============================================================================
+Omnibus:                        0.145   Durbin-Watson:                   1.283
+Prob(Omnibus):                  0.930   Jarque-Bera (JB):                0.194
+Skew:                           0.174   Prob(JB):                        0.908
+Kurtosis:                       2.565   Cond. No.                         18.4
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=전북특별자치도, year=2019, mode=before, n=14
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.111
+Model:                            OLS   Adj. R-squared:                 -0.051
+Method:                 Least Squares   F-statistic:                    0.6851
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.524
+Time:                        14:58:54   Log-Likelihood:                 44.983
+No. Observations:                  14   AIC:                            -83.97
+Df Residuals:                      11   BIC:                            -82.05
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0193      0.026      0.752      0.468      -0.037       0.076
+fiscal_independence_0to1     0.0772      0.071      1.091      0.298      -0.079       0.233
+total_fertility_rate         0.0045      0.014      0.317      0.757      -0.027       0.036
+==============================================================================
+Omnibus:                        0.088   Durbin-Watson:                   1.946
+Prob(Omnibus):                  0.957   Jarque-Bera (JB):                0.316
+Skew:                          -0.013   Prob(JB):                        0.854
+Kurtosis:                       2.264   Cond. No.                         39.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=전라남도, year=2019, mode=before, n=22
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.341
+Model:                            OLS   Adj. R-squared:                  0.272
+Method:                 Least Squares   F-statistic:                     4.917
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0190
+Time:                        14:58:54   Log-Likelihood:                 72.419
+No. Observations:                  22   AIC:                            -138.8
+Df Residuals:                      19   BIC:                            -135.6
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0195      0.012      1.687      0.108      -0.005       0.044
+fiscal_independence_0to1     0.0898      0.030      3.026      0.007       0.028       0.152
+total_fertility_rate         0.0008      0.006      0.119      0.906      -0.013       0.014
+==============================================================================
+Omnibus:                        1.695   Durbin-Watson:                   2.556
+Prob(Omnibus):                  0.428   Jarque-Bera (JB):                1.462
+Skew:                           0.569   Prob(JB):                        0.481
+Kurtosis:                       2.452   Cond. No.                         25.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경상북도, year=2019, mode=before, n=23
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.311
+Model:                            OLS   Adj. R-squared:                  0.242
+Method:                 Least Squares   F-statistic:                     4.509
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0242
+Time:                        14:58:54   Log-Likelihood:                 71.319
+No. Observations:                  23   AIC:                            -136.6
+Df Residuals:                      20   BIC:                            -133.2
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0295      0.022      1.357      0.190      -0.016       0.075
+fiscal_independence_0to1     0.0745      0.037      2.038      0.055      -0.002       0.151
+total_fertility_rate        -0.0066      0.013     -0.503      0.621      -0.034       0.021
+==============================================================================
+Omnibus:                        0.259   Durbin-Watson:                   1.786
+Prob(Omnibus):                  0.878   Jarque-Bera (JB):                0.369
+Skew:                           0.213   Prob(JB):                        0.831
+Kurtosis:                       2.549   Cond. No.                         28.0
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경상남도, year=2019, mode=before, n=18
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.570
+Model:                            OLS   Adj. R-squared:                  0.513
+Method:                 Least Squares   F-statistic:                     9.956
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):            0.00177
+Time:                        14:58:54   Log-Likelihood:                 60.676
+No. Observations:                  18   AIC:                            -115.4
+Df Residuals:                      15   BIC:                            -112.7
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0166      0.019      0.887      0.389      -0.023       0.057
+fiscal_independence_0to1     0.1045      0.023      4.458      0.000       0.055       0.155
+total_fertility_rate         0.0045      0.016      0.281      0.782      -0.030       0.039
+==============================================================================
+Omnibus:                        1.133   Durbin-Watson:                   1.571
+Prob(Omnibus):                  0.567   Jarque-Bera (JB):                1.003
+Skew:                           0.415   Prob(JB):                        0.605
+Kurtosis:                       2.195   Cond. No.                         18.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=provincial, region=전국, year=2019, mode=before, n=17
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.109
+Model:                            OLS   Adj. R-squared:                 -0.018
+Method:                 Least Squares   F-statistic:                    0.8565
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.446
+Time:                        14:58:54   Log-Likelihood:                 54.211
+No. Observations:                  17   AIC:                            -102.4
+Df Residuals:                      14   BIC:                            -99.92
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+============================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+const                        0.0604      0.021      2.916      0.011       0.016       0.105
+fiscal_independence_0to1     0.0138      0.017      0.836      0.417      -0.022       0.049
+total_fertility_rate        -0.0126      0.017     -0.757      0.462      -0.048       0.023
+==============================================================================
+Omnibus:                       22.466   Durbin-Watson:                   2.583
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               25.869
+Skew:                           2.193   Prob(JB):                     2.41e-06
+Kurtosis:                       7.157   Cond. No.                         15.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

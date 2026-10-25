@@ -1,0 +1,476 @@
+
+================================================================================
+scope=municipal, region=전국, year=2016, n=228
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.094
+Model:                            OLS   Adj. R-squared:                  0.090
+Method:                 Least Squares   F-statistic:                     23.48
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):           2.34e-06
+Time:                        14:59:09   Log-Likelihood:                 668.27
+No. Observations:                 228   AIC:                            -1333.
+Df Residuals:                     226   BIC:                            -1326.
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0575      0.004     13.742      0.000       0.049       0.066
+total_fertility_rate    -0.0156      0.003     -4.846      0.000      -0.022      -0.009
+==============================================================================
+Omnibus:                       18.401   Durbin-Watson:                   1.528
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               23.718
+Skew:                           0.570   Prob(JB):                     7.07e-06
+Kurtosis:                       4.093   Cond. No.                         9.99
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=서울특별시, year=2016, n=25
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.026
+Model:                            OLS   Adj. R-squared:                 -0.016
+Method:                 Least Squares   F-statistic:                    0.6200
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.439
+Time:                        14:59:09   Log-Likelihood:                 70.587
+No. Observations:                  25   AIC:                            -137.2
+Df Residuals:                      23   BIC:                            -134.7
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0770      0.036      2.127      0.044       0.002       0.152
+total_fertility_rate    -0.0303      0.038     -0.787      0.439      -0.110       0.049
+==============================================================================
+Omnibus:                       10.813   Durbin-Watson:                   1.621
+Prob(Omnibus):                  0.004   Jarque-Bera (JB):                9.107
+Skew:                           1.370   Prob(JB):                       0.0105
+Kurtosis:                       4.112   Cond. No.                         24.2
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=부산광역시, year=2016, n=16
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.151
+Model:                            OLS   Adj. R-squared:                  0.090
+Method:                 Least Squares   F-statistic:                     2.481
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.138
+Time:                        14:59:09   Log-Likelihood:                 58.691
+No. Observations:                  16   AIC:                            -113.4
+Df Residuals:                      14   BIC:                            -111.8
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0328      0.006      5.086      0.000       0.019       0.047
+total_fertility_rate     0.0089      0.006      1.575      0.138      -0.003       0.021
+==============================================================================
+Omnibus:                        1.205   Durbin-Watson:                   2.419
+Prob(Omnibus):                  0.547   Jarque-Bera (JB):                0.856
+Skew:                           0.234   Prob(JB):                        0.652
+Kurtosis:                       1.969   Cond. No.                         7.75
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=대구광역시, year=2016, n=8
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.018
+Model:                            OLS   Adj. R-squared:                 -0.146
+Method:                 Least Squares   F-statistic:                    0.1075
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.754
+Time:                        14:59:09   Log-Likelihood:                 27.742
+No. Observations:                   8   AIC:                            -51.48
+Df Residuals:                       6   BIC:                            -51.33
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0446      0.016      2.784      0.032       0.005       0.084
+total_fertility_rate    -0.0044      0.013     -0.328      0.754      -0.037       0.028
+==============================================================================
+Omnibus:                        0.207   Durbin-Watson:                   3.145
+Prob(Omnibus):                  0.902   Jarque-Bera (JB):                0.224
+Skew:                          -0.246   Prob(JB):                        0.894
+Kurtosis:                       2.344   Cond. No.                         10.5
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=인천광역시, year=2016, n=10
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.033
+Model:                            OLS   Adj. R-squared:                 -0.087
+Method:                 Least Squares   F-statistic:                    0.2761
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.614
+Time:                        14:59:09   Log-Likelihood:                 29.290
+No. Observations:                  10   AIC:                            -54.58
+Df Residuals:                       8   BIC:                            -53.97
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0166      0.055      0.304      0.769      -0.109       0.142
+total_fertility_rate     0.0245      0.047      0.525      0.614      -0.083       0.132
+==============================================================================
+Omnibus:                        0.383   Durbin-Watson:                   1.474
+Prob(Omnibus):                  0.826   Jarque-Bera (JB):                0.021
+Skew:                           0.022   Prob(JB):                        0.989
+Kurtosis:                       2.778   Cond. No.                         24.1
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=광주광역시, year=2016, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.001
+Model:                            OLS   Adj. R-squared:                 -0.332
+Method:                 Least Squares   F-statistic:                  0.003692
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.955
+Time:                        14:59:09   Log-Likelihood:                 18.306
+No. Observations:                   5   AIC:                            -32.61
+Df Residuals:                       3   BIC:                            -33.39
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0484      0.024      2.038      0.134      -0.027       0.124
+total_fertility_rate    -0.0013      0.021     -0.061      0.955      -0.068       0.066
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   2.768
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.215
+Skew:                          -0.100   Prob(JB):                        0.898
+Kurtosis:                       2.003   Cond. No.                         13.2
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=대전광역시, year=2016, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.578
+Model:                            OLS   Adj. R-squared:                  0.438
+Method:                 Least Squares   F-statistic:                     4.114
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.136
+Time:                        14:59:09   Log-Likelihood:                 18.428
+No. Observations:                   5   AIC:                            -32.86
+Df Residuals:                       3   BIC:                            -33.64
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                   -0.0232      0.039     -0.595      0.594      -0.147       0.101
+total_fertility_rate     0.0669      0.033      2.028      0.136      -0.038       0.172
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   1.194
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.352
+Skew:                          -0.263   Prob(JB):                        0.839
+Kurtosis:                       1.812   Cond. No.                         22.5
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=울산광역시, year=2016, n=5
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.295
+Model:                            OLS   Adj. R-squared:                  0.060
+Method:                 Least Squares   F-statistic:                     1.257
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.344
+Time:                        14:59:09   Log-Likelihood:                 20.180
+No. Observations:                   5   AIC:                            -36.36
+Df Residuals:                       3   BIC:                            -37.14
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0716      0.027      2.613      0.079      -0.016       0.159
+total_fertility_rate    -0.0211      0.019     -1.121      0.344      -0.081       0.039
+==============================================================================
+Omnibus:                          nan   Durbin-Watson:                   3.288
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.209
+Skew:                           0.250   Prob(JB):                        0.901
+Kurtosis:                       2.132   Cond. No.                         23.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경기도, year=2016, n=31
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.237
+Model:                            OLS   Adj. R-squared:                  0.211
+Method:                 Least Squares   F-statistic:                     9.001
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):            0.00550
+Time:                        14:59:09   Log-Likelihood:                 97.317
+No. Observations:                  31   AIC:                            -190.6
+Df Residuals:                      29   BIC:                            -187.8
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0875      0.014      6.121      0.000       0.058       0.117
+total_fertility_rate    -0.0343      0.011     -3.000      0.005      -0.058      -0.011
+==============================================================================
+Omnibus:                        7.091   Durbin-Watson:                   1.451
+Prob(Omnibus):                  0.029   Jarque-Bera (JB):                5.397
+Skew:                           0.924   Prob(JB):                       0.0673
+Kurtosis:                       3.874   Cond. No.                         15.0
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=강원특별자치도, year=2016, n=18
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.042
+Model:                            OLS   Adj. R-squared:                 -0.018
+Method:                 Least Squares   F-statistic:                    0.7001
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.415
+Time:                        14:59:09   Log-Likelihood:                 52.761
+No. Observations:                  18   AIC:                            -101.5
+Df Residuals:                      16   BIC:                            -99.74
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0474      0.018      2.687      0.016       0.010       0.085
+total_fertility_rate    -0.0111      0.013     -0.837      0.415      -0.039       0.017
+==============================================================================
+Omnibus:                        3.992   Durbin-Watson:                   2.384
+Prob(Omnibus):                  0.136   Jarque-Bera (JB):                2.447
+Skew:                           0.900   Prob(JB):                        0.294
+Kurtosis:                       3.156   Cond. No.                         11.3
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=충청북도, year=2016, n=11
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.278
+Model:                            OLS   Adj. R-squared:                  0.197
+Method:                 Least Squares   F-statistic:                     3.460
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):             0.0958
+Time:                        14:59:09   Log-Likelihood:                 36.831
+No. Observations:                  11   AIC:                            -69.66
+Df Residuals:                       9   BIC:                            -68.87
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0010      0.016      0.061      0.953      -0.035       0.037
+total_fertility_rate     0.0220      0.012      1.860      0.096      -0.005       0.049
+==============================================================================
+Omnibus:                        4.397   Durbin-Watson:                   1.831
+Prob(Omnibus):                  0.111   Jarque-Bera (JB):                1.444
+Skew:                          -0.793   Prob(JB):                        0.486
+Kurtosis:                       3.797   Cond. No.                         11.8
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=충청남도, year=2016, n=15
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.017
+Model:                            OLS   Adj. R-squared:                 -0.058
+Method:                 Least Squares   F-statistic:                    0.2308
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.639
+Time:                        14:59:09   Log-Likelihood:                 48.073
+No. Observations:                  15   AIC:                            -92.15
+Df Residuals:                      13   BIC:                            -90.73
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0246      0.016      1.525      0.151      -0.010       0.059
+total_fertility_rate     0.0057      0.012      0.480      0.639      -0.020       0.031
+==============================================================================
+Omnibus:                        5.134   Durbin-Watson:                   1.476
+Prob(Omnibus):                  0.077   Jarque-Bera (JB):                2.356
+Skew:                           0.825   Prob(JB):                        0.308
+Kurtosis:                       4.023   Cond. No.                         12.4
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=전북특별자치도, year=2016, n=14
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.023
+Model:                            OLS   Adj. R-squared:                 -0.058
+Method:                 Least Squares   F-statistic:                    0.2880
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.601
+Time:                        14:59:09   Log-Likelihood:                 45.857
+No. Observations:                  14   AIC:                            -87.71
+Df Residuals:                      12   BIC:                            -86.44
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0206      0.016      1.305      0.216      -0.014       0.055
+total_fertility_rate     0.0060      0.011      0.537      0.601      -0.018       0.030
+==============================================================================
+Omnibus:                        1.457   Durbin-Watson:                   2.611
+Prob(Omnibus):                  0.483   Jarque-Bera (JB):                0.858
+Skew:                           0.186   Prob(JB):                        0.651
+Kurtosis:                       1.845   Cond. No.                         12.6
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=전라남도, year=2016, n=22
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.009
+Model:                            OLS   Adj. R-squared:                 -0.041
+Method:                 Least Squares   F-statistic:                    0.1773
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.678
+Time:                        14:59:09   Log-Likelihood:                 74.837
+No. Observations:                  22   AIC:                            -145.7
+Df Residuals:                      20   BIC:                            -143.5
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0301      0.010      3.124      0.005       0.010       0.050
+total_fertility_rate    -0.0026      0.006     -0.421      0.678      -0.015       0.010
+==============================================================================
+Omnibus:                        1.541   Durbin-Watson:                   2.906
+Prob(Omnibus):                  0.463   Jarque-Bera (JB):                1.066
+Skew:                           0.530   Prob(JB):                        0.587
+Kurtosis:                       2.802   Cond. No.                         11.8
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경상북도, year=2016, n=23
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.049
+Model:                            OLS   Adj. R-squared:                  0.004
+Method:                 Least Squares   F-statistic:                     1.091
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.308
+Time:                        14:59:09   Log-Likelihood:                 70.275
+No. Observations:                  23   AIC:                            -136.6
+Df Residuals:                      21   BIC:                            -134.3
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0087      0.020      0.437      0.666      -0.033       0.050
+total_fertility_rate     0.0149      0.014      1.044      0.308      -0.015       0.045
+==============================================================================
+Omnibus:                        1.486   Durbin-Watson:                   1.730
+Prob(Omnibus):                  0.476   Jarque-Bera (JB):                1.316
+Skew:                           0.520   Prob(JB):                        0.518
+Kurtosis:                       2.458   Cond. No.                         16.9
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=municipal, region=경상남도, year=2016, n=18
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.031
+Model:                            OLS   Adj. R-squared:                 -0.030
+Method:                 Least Squares   F-statistic:                    0.5044
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.488
+Time:                        14:59:09   Log-Likelihood:                 60.648
+No. Observations:                  18   AIC:                            -117.3
+Df Residuals:                      16   BIC:                            -115.5
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0248      0.015      1.645      0.119      -0.007       0.057
+total_fertility_rate     0.0079      0.011      0.710      0.488      -0.016       0.031
+==============================================================================
+Omnibus:                        2.699   Durbin-Watson:                   2.681
+Prob(Omnibus):                  0.259   Jarque-Bera (JB):                1.482
+Skew:                           0.701   Prob(JB):                        0.477
+Kurtosis:                       3.111   Cond. No.                         15.1
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+================================================================================
+scope=provincial, region=전국, year=2016, n=17
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.090
+Model:                            OLS   Adj. R-squared:                  0.029
+Method:                 Least Squares   F-statistic:                     1.480
+Date:                Sun, 25 Oct 2026   Prob (F-statistic):              0.243
+Time:                        14:59:09   Log-Likelihood:                 56.680
+No. Observations:                  17   AIC:                            -109.4
+Df Residuals:                      15   BIC:                            -107.7
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+const                    0.0614      0.015      3.986      0.001       0.029       0.094
+total_fertility_rate    -0.0143      0.012     -1.216      0.243      -0.039       0.011
+==============================================================================
+Omnibus:                       16.948   Durbin-Watson:                   2.618
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               15.780
+Skew:                           1.767   Prob(JB):                     0.000374
+Kurtosis:                       6.128   Cond. No.                         14.3
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

@@ -1,0 +1,5 @@
+/* Simple birth-rate OLS view: inherits the shared design language. */
+.birth-kpis .kpi-value{font-size:clamp(20px,2.2vw,31px)}
+#birth-warning{font-size:12px;line-height:1.8;font-weight:600}
+#birth-scatter{min-height:280px}
+@media(max-width:780px){.birth-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}

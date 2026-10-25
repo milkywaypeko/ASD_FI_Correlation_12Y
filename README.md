@@ -1,14 +1,21 @@
-# 장애인 등록률 × 재정자립도 (2014–2022)
+# 장애등록률 · 재정자립도 · 합계출산율 OLS 대시보드 (2014–2022)
 
-`./Statistics` 디렉터리의 주민등록인구·재정자립도·장애인 등록현황 CSV를 이용해 `statsmodels.OLS`를 수행하고 **GitHub Pages용 정적 웹사이트**를 출력하는 Python 프로젝트입니다. 제공된 실제 19개 CSV를 포함합니다.
+> **전체 프로젝트를 GitHub 저장소 루트에 그대로 올릴 수 있습니다.** 최상위 `index.html`과 `.nojekyll`이 자동 생성됩니다. GitHub Pages를 `main / (root)`로 설정하세요. `site/index.html`은 독립적으로도 동작합니다.
+
+**다섯 개 웹페이지:** `site/index.html`(장애유형×재정자립도), `site/results.html`(회귀 통합), `site/multivariate.html`(재정자립도 + 출산율 → 자폐성 등록률 다중회귀), **`site/birth-ols.html`(출산율 → 자폐성 등록률 단순 OLS)**, `site/quality.html`(품질). 프로젝트 최상위 `index.html`에서도 메인 대시보드가 직접 표시됩니다. 모든 하위 페이지는 `site/`의 파일을 참조합니다.
+
+`./Statistics` 디렉터리의 주민등록인구·재정자립도·장애인 등록현황 CSV를 이용해 `statsmodels.OLS`를 수행하고 **GitHub Pages용 정적 웹사이트**를 출력하는 Python 프로젝트입니다. 제공된 실제 20개 CSV(출산율 추가)를 포함합니다. 원본 파일은 변경하지 않습니다.
 
 ## 폴더 구조
 
 ```text
 disability-fiscal-dashboard/
-├── build.py                        # 데이터 정규화 + 장애유형별 등록률 + OLS + JSON/Raw 출력
+├── index.html                      # GitHub Pages /(root) 진입점 · 빌드시 생성
+├── .nojekyll                       # GitHub Pages Jekyll 파일 제외 방지
+├── build.py                        # 자료 정규화 + 3종 OLS + 정적 파일 빌드
 ├── requirements.txt
 ├── Statistics/
+│   ├── Birth rate.csv                 # 합계출산율
 │   ├── Financial Independence.csv
 │   ├── Resident population.csv
 │   └── Disability/
@@ -17,18 +24,28 @@ disability-fiscal-dashboard/
 │       └── ... (시도별 총 17개 CSV)
 └── site/                           # 완성된 정적 페이지. 바로 배포 가능
     ├── index.html                  # 산점도/회귀식/계수 요약/연도 슬라이더/관측치
-    ├── results.html                # 연도×지역 통합 모형 표 및 계수 변화 그래프
+    ├── results.html                # 연도×지역 단순회귀 표 및 계수 변화 그래프
+    ├── multivariate.html           # 자폐성 등록률 + 재정자립도 + 출산율 다중회귀
+    ├── birth-ols.html              # 신규: 출산율 단일변수 + 자폐성 장애 등록률 OLS
     ├── quality.html                # 자료 결합 방법 및 누락 감사
     ├── .nojekyll
     ├── assets/
-    │   ├── css/style.css
-    │   └── js/{common,dashboard,results,quality}.js
+    │   ├── css/{style,multivariate,birth-ols}.css
+    │   └── js/{common,dashboard,results,multivariate,birth-ols,quality}.js
     ├── data/
     │   ├── meta.json
     │   ├── municipalities.json
     │   ├── provinces.json
     │   ├── models_2014_before.json  # 연도·개편 전후별 모형 (2014~2022)
     │   ├── models_2022_after.json
+    │   ├── multi_models_2014_before.json
+    │   ├── multi_models_pooled.json
+    │   ├── multi_models_local_history.json
+    │   ├── multi_quality.json
+    │   ├── birth_ols_models_2014.json       # 신규: 연도별 단순 OLS
+    │   ├── birth_ols_models_pooled.json     # 신규: 9개년 통합 모형
+    │   ├── birth_ols_models_local_history.json
+    │   ├── birth_ols_quality.json
     │   ├── models_pooled.json       # 전 시점 통합 OLS
     │   ├── models_local_history.json# 개별 기초지자체 2014~2022 시계열 OLS
     │   └── quality.json
@@ -45,29 +62,34 @@ disability-fiscal-dashboard/
 cd disability-fiscal-dashboard
 python -m pip install -r requirements.txt
 python build.py
-python -m http.server 8000 --directory site
+python -m http.server 8000  # 프로젝트 최상위에서 실행
 ```
 
-브라우저에서 `http://localhost:8000`을 엽니다. 재현 실행 시 기존 `site/data/`와 `site/raw/`의 계산 결과를 덮어씁니다. 다른 경로를 쓰려면:
+브라우저에서 `http://localhost:8000`(최상위 `index.html`) 또는 `http://localhost:8000/site/birth-ols.html`(새 단순회귀)를 엽니다. 재현 실행 시 기존 `site/data/`와 `site/raw/`의 계산 결과를 덮어씁니다. 다른 경로를 쓰려면:
 
 ```bash
 python build.py --input /path/to/project --output /path/to/public
 ```
 
-`--input` 아래에 `Statistics/Financial Independence.csv`, `Statistics/Resident population.csv`, `Statistics/Disability/Population of the disabled in *.csv`가 있어야 합니다. 다른 시도 파일을 추가할 경우 `build.py`의 `FILE_TO_PROVINCE` 항목에 등록하세요.
+`--input` 아래에 `Statistics/Birth rate.csv`, `Statistics/Financial Independence.csv`, `Statistics/Resident population.csv`, `Statistics/Disability/Population of the disabled in *.csv`가 있어야 합니다. 다른 시도 파일을 추가할 경우 `build.py`의 `FILE_TO_PROVINCE` 항목에 등록하세요.
 
-## GitHub Pages 배포
+## GitHub Pages 배포 — 프로젝트 전체 업로드
 
-1. 원하는 GitHub 저장소를 만든 뒤 `site/` 폴더의 **내용물**(`index.html`, `results.html`, `assets`, `data`, `raw` 등)을 저장소 **루트**에 업로드합니다. 
-2. 저장소 `Settings → Pages → Build and deployment`에서 **Deploy from a branch → main / (root)** 를 선택합니다.
-3. 공개되는 URL 예시: `https://<사용자명>.github.io/<저장소명>/`.
+1. `python -m pip install -r requirements.txt` 및 `python build.py`를 먼저 실행해 분석 데이터를 생성합니다. **원본 Statistics CSV는 수정하지 않습니다.**
+2. 저장소 최상위에 프로젝트 전체(`index.html`, `.nojekyll`, `build.py`, `Statistics/`, `site/` 등)를 업로드합니다. **`site/`를 별도로 루트로 옮기거나 HTML 경로를 수정할 필요가 없습니다.**
+3. GitHub 저장소의 `Settings → Pages → Build and deployment`에서 `Deploy from a branch`, `main`, `/(root)`를 선택합니다.
+4. `https://사용자명.github.io/저장소명/`에서 메인 페이지가 표시되고, 사이드 메뉴에서 출산율 단순회귀·다중회귀 등으로 이동합니다.
 
-`site/` 폴더를 통째로 저장소에 유지하고 싶다면 `site`를 `docs`로 변경하거나 `site` 내용물을 `docs/`로 복사한 후 Pages 배포 소스를 `/docs`로 설정해도 됩니다. GitHub Pages의 브랜치 배포에서 기본 지원되는 위치는 `/(root)` 혹은 `/docs`입니다. 페이지 파일을 `file://`로 더블클릭하면 JSON `fetch()`가 차단될 수 있으므로 HTTP 서버 또는 GitHub Pages에서 열어야 합니다. Chart.js 및 글꼴은 CDN을 사용하므로 차트 표시에는 인터넷 연결이 필요합니다. GitHub Pages에서는 Python이 실행되지 않으며, Python은 배포 **전에** 사전 계산을 수행합니다.
+최상위 `index.html`은 `site/index.html`에서 생성한 **실제 대시보드 HTML**입니다. `<base href="./site/">`를 사용해 상대 URL·JS fetch가 `site/` 아래 파일을 가리키게 합니다. 최상위 `.nojekyll`도 자동 생성합니다. `site/` 안의 HTML 파일은 별도 base 없이 직접 접근 가능합니다. `--output`을 사용자 지정 폴더로 지정한 경우 해당 폴더 자체가 완성된 배포용 웹사이트입니다.
+
+> GitHub Pages에서 Python 코드는 실행되지 않습니다. CSV를 수정하면 **로컬에서 `python build.py`를 다시 실행한 후** 생성된 `index.html` 및 `site/data/`, `site/raw/` 등의 변경 파일을 저장소에 반영해야 합니다. Chart.js는 CDN 사용으로 차트 표시 시 인터넷 연결이 필요합니다.
 
 ## 기능
 
 - **메인 대시보드:** 회귀 단위(기초 간·광역 간·개별 기초 시계열), 광역 필터, 기초 필터, 장애유형, 재정자립도 개편 전후, 단일 연도 슬라이더, 9개년 통합 선택. 산점도 툴팁에 광역·기초 지자체명 및 연도·수치를 표시합니다. 회귀선, 기울기, 절편, R², p-값과 표본 수가 그래프 위 카드에 나타납니다. 각 연도별 4개 계수 추이도 제공합니다. 원자료 표 필터·페이지 넘김·CSV 내려받기와 statsmodels 원문 펼치기가 가능합니다.
 - **통합 결과:** 개별 연도×전국/광역 필터로 산출한 모형 목록, 단위·유형·개편 전후·지역별 검색 및 정렬, 4개 계수 시계열 그래프, 각 모델 원문과 산점도 연결, CSV 내보내기. 기초지자체 9개년 시계열 모형도 조회할 수 있습니다.
+- **출산율 × 자폐성 장애 단순 OLS:** `birth-ols.html`은 해당 지역의 **합계출산율 X(명/여성)**와 **자폐성 장애인 등록률 Y(%)**만으로 `Y = β₀ + β₁X`를 적합합니다. 재정자립도는 이 페이지의 독립변수에 포함하지 않습니다. 개별 연도(2014–2022)·9개년 통합·전국 기초지자체·17개 광역지자체·광역별 기초지자체·특정 기초지자체의 9개년 시계열 모형을 제공합니다. 통계 카드, 회귀선 산점도와 광역/기초 툴팁, β₁/β₀/R²/p 추이, 지역/연도별 통합 결과표, CSV, 원문 statsmodels summary를 제공합니다. 원본 CSV의 공란은 0으로 대체하지 않습니다.
+- **자폐성 다중회귀:** `multivariate.html`은 자폐성 장애인 등록률(%)을 종속변수로, 빌드 시 100으로 나눈 재정자립도(0~1)와 합계출산율을 독립변수로 함께 투입합니다. 전후 기준별·단일 연도·전체 9개년·시도별 횡단면·기초 시계열 모델, 두 계수의 p-값과 신뢰구간, R²·수정 R², 2개 보정 산점도, 계수별 6개 추이 차트, 통합 표, 원본 데이터/Raw 출력과 결측 감사 정보를 제공합니다.
 - **데이터 품질:** 지자체 및 장애유형 정규화 방법, 조인 검사, 부적합 행 처리, 분석 가정을 기록합니다.
 
 ## 장애인 등록률과 지역 매칭
@@ -87,7 +109,7 @@ python build.py --input /path/to/project --output /path/to/public
 
 ## 회귀모형의 정의 및 한계
 
-`statsmodels.api.OLS(Y, add_constant(X)).fit()`을 이용하여 장애인 등록률 Y(%)와 재정자립도 X(%)의 **단순 선형회귀(절편 포함)** 를 계산합니다. 모형별 `n`, 기울기 `β₁`, 절편 `β₀`, 결정계수 `R²`, 기울기 양측 p-값, `fit().summary()` Raw 문자열을 JSON 및 원문 텍스트에 저장합니다. 표본이 3개 미만이거나 X 분산이 0이면 계수를 계산하지 않고 사유를 저장합니다.
+`statsmodels.api.OLS(Y, add_constant(X)).fit()`을 이용하여 장애인 등록률 Y(%)와 정규화된 재정자립도 X(0~1)의 **단순 선형회귀(절편 포함)** 를 계산합니다. 모형별 `n`, 기울기 `β₁`, 절편 `β₀`, 결정계수 `R²`, 기울기 양측 p-값, `fit().summary()` Raw 문자열을 JSON 및 원문 텍스트에 저장합니다. 표본이 3개 미만이거나 X 분산이 0이면 계수를 계산하지 않고 사유를 저장합니다.
 
 - 단일 연도 + 기초 단위 = 그 해의 전국 또는 특정 광역 산하 기초지자체 간 회귀.
 - 단일 연도 + 광역 단위 = 그 해 전국 17개 광역지자체 간 회귀.
@@ -104,3 +126,24 @@ python build.py --input /path/to/project --output /path/to/public
 - 라이선스: 작성된 Python 및 프런트엔드 코드를 사용·변형할 수 있습니다. **원본 CSV의 2차 사용 및 출처 표기는 해당 데이터 제공기관 이용조건을 확인하세요.**
 
 테스트: `python -m unittest discover -s tests -v`
+
+
+## 2026 추가 기능: 재정자립도 0~1 정규화 + 자폐성 장애 다중회귀
+
+**원본 `Statistics/Financial Independence.csv`는 변경하지 않습니다.** `build.py`의 `parse_fiscal` 함수에서 CSV 수치가 읽힌 뒤 메모리상으로 `원본값 / 100`을 적용합니다. 예: 47.51(%) → 0.4751. 기초·광역 모두 개편 전후 각 변수에 동일하게 적용하며 단순회귀 기울기 값은 종전 1%p당 계수의 **100배**가 됩니다. 회귀선의 예측값·R²·p-값은 이 단위변환만으로 변하지 않습니다. X축과 관측치 표 및 CSV 내보내기는 **0~1 단위**입니다.
+
+다중회귀 모형 (`statsmodels.OLS`, 절편 포함):
+
+```text
+자폐성 장애인 등록률(%) = β₀ + β₁ × 정규화 재정자립도(0~1) + β₂ × 합계출산율(명/여성) + ε
+```
+
+`Statistics/Birth rate.csv`는 KOSIS 스타일의 합계출산율(시도 합계 + 시군구 별 수치)로, 원본 2014~2022 기간을 `(연도, 광역, 기초)`로 결합합니다. 자폐성 장애 등록률은 **해당 지역 전체 주민등록인구** 대비 자폐성 장애 등록인원의 비율이며 전체 장애인 중 자폐성 구성비가 아닙니다. 다중회귀의 잔차·두 변수 보정 산점도와 변수별 신뢰구간, 계수 p-값, 전체 F-검정 p-값, VIF까지 화면에서 확인할 수 있습니다. `site/data/multi_quality.json`에 지역 결합 내역/결측 목록을 보관하고 `site/raw/MULTI_*`에 statsmodels 텍스트 summary를 저장합니다.
+
+**해석상 주의:** 동시기 합계출산율은 해당 연도의 자폐성 장애인 유병 원인을 나타내지 않습니다. 등록된 자폐성 장애인은 서로 다른 출생 연령 코호트를 포함하고, 연도 통합 모형은 지역 내 반복측정·고정효과를 통제하지 않습니다. 따라서 이 회귀는 탐색적 상관관계 분석이며 인과적 영향 추정이 아닙니다.
+
+다중회귀의 출산율 지역 키 자체는 2,052/2,052개 모두 일치하지만, 2014년 경상북도 울릉군의 자폐성 장애인 등록인원은 원본 공란으로 해당 연도 Y값을 계산할 수 없어 회귀분석의 전체 유효 표본은 **2,051개**입니다. 결측 응답을 임의로 0으로 대체하지 않습니다.
+
+## 신규 단순 OLS의 해석 주의
+
+`site/data/birth_ols_models_*.json`과 `site/raw/BIRTH_OLS_*.txt`에 Python `statsmodels` 결과를 저장합니다. **합계출산율(독립변수)**은 같은 시점의 지역 출생 특성이며, **자폐성 장애 등록률(종속변수)**은 모든 연령을 포함합니다. 두 값 사이의 연관성은 등록·진단 환경과 인구구조·시간추세 등의 교란 요인에 영향을 받을 수 있고, 회귀계수가 출산율의 인과적 영향이라는 뜻은 아닙니다. 기초지자체별 9개년 통합/시계열 모형의 p-값은 군집상관을 보정하지 않습니다. 해당 페이지는 통계적 탐색 목적입니다.
