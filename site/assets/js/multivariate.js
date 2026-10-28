@@ -93,13 +93,15 @@
     const isFiscal=key==='fiscal';
     const value=r=>isFiscal?r[state.mode]:r.fertility;
     const other=r=>isFiscal?r.fertility:r[state.mode];
-    const otherCoef=roundModel(current)?(isFiscal?current.fertility_coef:current.fiscal_coef):0;
-    const mean=visibleRows.reduce((s,r)=>s+other(r),0)/(visibleRows.length||1);
-    const pts=visibleRows.map(r=>{
-      const y=r.rates[state.dtype];return {x:value(r),y:y-otherCoef*(other(r)-mean),
-        original:y,predicted:prediction(r),province:r.province,district:r.district,year:r.year,
-        fiscal:r[state.mode],fertility:r.fertility};
-    });
+    // Points are actual registered disability rates, NEVER residualised/adjusted values.
+    // The 2-D orange line is a conditional *model prediction*: the other
+    // independent variable is fixed at its sample mean. It is not a univariate OLS.
+    const mean=visibleRows.reduce((sum,r)=>sum+other(r),0)/(visibleRows.length||1);
+    const pts=visibleRows.map(r=>({
+      x:value(r),y:r.rates[state.dtype],predicted:prediction(r),
+      province:r.province,district:r.district,year:r.year,
+      fiscal:r[state.mode],fertility:r.fertility
+    }));
     const xs=pts.map(r=>r.x);
     const xmin=xs.length?Math.min(...xs):0,xmax=xs.length?Math.max(...xs):1;
     const line=roundModel(current)?[
@@ -109,21 +111,21 @@
         (isFiscal?current.fiscal_coef:current.fertility_coef)*xmax}
     ]:[];
     Lab.setChart(chartId,{type:'scatter',data:{datasets:[
-      {label:'관측치 (다른 독립변수 보정)',data:pts,pointRadius:state.allYears?3:4,
+      {label:'실제 등록률 관측치',data:pts,pointRadius:state.allYears?3:4,
        pointHoverRadius:7,pointBackgroundColor:'rgba(33,140,136,.58)',backgroundColor:'rgba(33,140,136,.58)',borderColor:'#fff',pointBorderWidth:.5},
       {type:'line',label:'조건부 예측선',data:line,pointRadius:0,borderWidth:2.8,
        borderColor:'#e59a5c',backgroundColor:'#e59a5c',order:0}
     ]},options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{intersect:true,mode:'nearest'},
       plugins:{legend:{display:false},tooltip:{callbacks:{
-        title:items=>items[0]?.raw?.province?`${items[0].raw.province} · ${items[0].raw.district}`:'모형 조건부 예측선',
+        title:items=>items[0]?.raw?.province?`${items[0].raw.province} · ${items[0].raw.district}`:'다중회귀 조건부 예측선',
         label:ctx=>{const r=ctx.raw;if(!r?.province)return `조건부 예측 등록률: ${fmt(ctx.parsed.y,6)}%`;
           return [`${r.year}년 · ${state.dtype} 장애유형`,
-            `원래 등록률: ${fmt(r.original,6)}%`,`보정 등록률: ${fmt(r.y,6)}%`,
+            `실제 등록률: ${fmt(r.y,6)}%`,
             `재정자립도: ${fmt(r.fiscal,4)} (0~1)`,`합계출산율: ${fmt(r.fertility,3)}명`,
             `다중회귀 예측값: ${fmt(r.predicted,6)}%`];}
       }}},
       scales:{x:{type:'linear',title:{display:true,text:isFiscal?'재정자립도 (0~1)':'합계출산율 (명/여성)',color:'#637386'},grid:{color:'#edf0f4'},ticks:{color:'#8091a3'}},
-              y:{title:{display:true,text:'보정 장애유형별 등록률 (%)',color:'#637386'},grid:{color:'#edf0f4'},ticks:{color:'#8091a3'}}}}
+              y:{title:{display:true,text:'실제 장애유형별 등록률 (%)',color:'#637386'},grid:{color:'#edf0f4'},ticks:{color:'#8091a3'}}}}
     });
   }
   function trends(){
@@ -206,9 +208,14 @@
     Lab.text('multi-raw-file',m.raw?`전체 Raw 텍스트: ${rawFilename(m)}`:'이 모형은 원본 Raw가 생성되지 않았습니다.');
     if(expanded)E('multi-raw').scrollIntoView({block:'nearest',behavior:'smooth'});
   }
+  function refresh3d(){
+    if(typeof Multi3D!=='undefined') Multi3D.render({rows:visibleRows,model:current,type:state.dtype,mode:state.mode,
+      showPlane:E('multi-3d-plane').checked,colorByYear:E('multi-3d-coloryear').checked});
+  }
   function refresh(){
     visibleRows=getData();current=obtainCurrent();
     stats();scatter('fiscal','multi-fiscal-scatter');scatter('birth','multi-birth-scatter');
+    refresh3d();
     trends();buildTable();observations();showRaw(current||{scope:state.scope,region:currentRegion(),year:actualPeriod(),mode:state.mode,type:state.dtype,warning:'모형이 없습니다.'},false);
   }
   try{
@@ -239,6 +246,8 @@
     });
     E('multi-district').addEventListener('change',()=>{state.district=E('multi-district').value;state.page=0;refresh();});
     E('multi-mode').addEventListener('change',()=>{state.mode=E('multi-mode').value;state.page=0;refresh();});
+    E('multi-3d-plane').addEventListener('change',refresh3d);
+    E('multi-3d-coloryear').addEventListener('change',refresh3d);
     E('multi-year').addEventListener('input',()=>{state.year=Number(E('multi-year').value);state.page=0;sync();refresh();});
     E('multi-all-years').addEventListener('change',()=>{state.allYears=E('multi-all-years').checked;state.page=0;sync();refresh();});
     E('multi-table-all').addEventListener('change',()=>{state.tableAll=E('multi-table-all').checked;state.page=0;buildTable();});

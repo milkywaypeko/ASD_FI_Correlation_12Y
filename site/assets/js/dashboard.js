@@ -109,6 +109,103 @@
       Lab.exportCsv('disability_observations.csv',['연도','광역','기초','인구','장애유형','유형등록인원','등록률(%)',`재정자립도_${st.mode}(0~1)`],
         view.map(r=>[r.year,r.province,r.district,r.population,st.dtype,st.dtype==='전체'?r.disabled:r.counts[st.dtype],r.rates[st.dtype],r[st.mode]]));
     });
+
+    // Fiscal independence × disability: same model-comparison workflow as
+    // the multivariate page, using the already-precomputed statsmodels OLS.
+    const compareState={allTypes:false,allRegions:false,search:'',page:0};
+    let compareTicket=0,compareRows=[],compareDisplayed=[],compareSelected=null,compareObs=[];
+    const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const comparisonKey=m=>`${m.scope}|${m.region}|${m.year}|${m.type}|${m.mode}`;
+    const labelModel=m=>m.scope==='local_history'?m.region.replace('|',' · '):m.region;
+    const scopeLabel=m=>m.scope==='municipal'?'기초 간':m.scope==='provincial'?'광역 간':'기초 시계열';
+    const modelRawFile=m=>`raw/OLS_${m.scope==='local_history'?`local_history_${m.mode}`:m.year==='전기간'?`pooled_${m.mode}`:`${m.year}_${m.mode}`}.txt`;
+    function compareModelSamples(m){
+      const rows=m.scope==='provincial'?provinces:municipalities;
+      return rows.filter(r=>{
+        if(m.year!=='전기간' && r.year!==Number(m.year))return false;
+        if(m.scope==='municipal' && m.region!=='전국' && r.province!==m.region)return false;
+        if(m.scope==='local_history' && `${r.province}|${r.district}`!==m.region)return false;
+        return r[m.mode]!=null && r.rates && r.rates[m.type]!=null;
+      });
+    }
+    function compareSampleRows(m){
+      return compareModelSamples(m).map(r=>{
+        const y=r.rates[m.type];
+        const fit=Number.isFinite(m.slope)&&Number.isFinite(m.intercept)
+          ?m.intercept+m.slope*r[m.mode]:null;
+        return [r.year,r.province,r.district,r.population,
+          m.type==='전체'?r.disabled:r.counts?.[m.type],y,r[m.mode],fit,fit==null?null:y-fit];
+      });
+    }
+    function showComparedModel(m){
+      compareSelected=m;
+      compareObs=compareSampleRows(m);
+      const valid=m.slope!=null;
+      Lab.text('compare-detail-title',`${m.year==='전기간'?'2014~2022 통합':m.year+'년'} · ${labelModel(m)} · ${m.type==='전체'?'전체 장애인':m.type}`);
+      Lab.text('compare-detail-hint',`${scopeLabel(m)} · 개편 ${m.mode==='after'?'후':'전'} · 표본 n=${m.n} · ${valid?'statsmodels OLS 원문':'회귀 불가 사유'}`);
+      E('compare-detail-raw').textContent=m.raw||m.warning||'유효한 회귀결과가 없습니다.';
+      E('compare-detail-raw').hidden=false;
+      E('compare-toggle-raw').disabled=false;
+      E('compare-toggle-raw').textContent='Raw 출력 접기';
+      E('compare-detail-export').disabled=!compareObs.length;
+      Lab.text('compare-detail-source',m.raw?`원문 저장 파일: site/${modelRawFile(m)} · 실제 등록률로 적합한 단순 OLS`:'표본 부족이나 독립변수 상수 등으로 회귀 불가. 아래 실제 관측치는 확인할 수 있습니다.');
+      E('compare-detail-observations').innerHTML=compareObs.slice(0,50).map(r=>
+        `<tr title="${esc(r[1])} · ${esc(r[2])}"><td>${r[0]}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td class="num">${Lab.integer(r[3])}</td><td class="num">${Lab.integer(r[4])}</td><td class="num">${Lab.numeric(r[5],6)}</td><td class="num">${Lab.numeric(r[6],5)}</td><td class="num">${Lab.numeric(r[7],6)}</td><td class="num">${Lab.numeric(r[8],6)}</td></tr>`
+      ).join('')||'<tr><td colspan="9">사용할 수 있는 관측치가 없습니다.</td></tr>';
+      Lab.text('compare-detail-count',`${compareObs.length.toLocaleString()}개 실제 관측치 중 ${Math.min(50,compareObs.length)}개 표시 · 「선택 모형 관측치 CSV」에는 전체 포함`);
+      E('compare-model-rows').querySelectorAll('tr').forEach(tr=>tr.classList.toggle('selected-model',tr.dataset.key===comparisonKey(m)));
+      E('compare-detail-panel').scrollIntoView({block:'start',behavior:'smooth'});
+    }
+    function buildComparedTable(){
+      compareDisplayed=compareRows.filter(m=>(`${m.year} ${m.region} ${m.type} ${m.scope} ${m.warning||''}`).toLowerCase().includes(compareState.search));
+      const pages=Math.max(1,Math.ceil(compareDisplayed.length/20));
+      compareState.page=Math.min(compareState.page,pages-1);
+      const chunk=compareDisplayed.slice(compareState.page*20,(compareState.page+1)*20);
+      E('compare-model-rows').innerHTML=chunk.map((m,i)=>`<tr data-key="${esc(comparisonKey(m))}" title="${esc(m.type)} · ${esc(labelModel(m))} · ${esc(m.year)} · ${esc(m.warning||'OLS 회귀 결과')}">
+        <td>${esc(m.year)}</td><td>${esc(m.type==='전체'?'전체 장애인':m.type)}</td><td>${scopeLabel(m)}</td><td>${esc(labelModel(m))}</td><td class="num">${Lab.integer(m.n)}</td>
+        <td class="num">${Lab.numeric(m.slope,6)}</td><td class="num">${Lab.numeric(m.intercept,6)}</td><td class="num">${Lab.numeric(m.r2,5)}</td><td class="num">${Lab.pvalue(m.p)}</td>
+        <td><button class="model-link" data-index="${i}" aria-label="${esc(labelModel(m))} ${esc(m.type)} Raw 출력 및 관측치 열기">${m.raw?'Raw·관측치':'불가 사유'}</button></td></tr>`).join('')||'<tr><td colspan="10">필터와 일치하는 회귀모형이 없습니다.</td></tr>';
+      E('compare-model-rows').querySelectorAll('button[data-index]').forEach(b=>b.addEventListener('click',()=>showComparedModel(chunk[Number(b.dataset.index)])));
+      if(compareSelected)E('compare-model-rows').querySelectorAll('tr').forEach(tr=>tr.classList.toggle('selected-model',tr.dataset.key===comparisonKey(compareSelected)));
+      Lab.text('compare-model-count',`${compareDisplayed.length.toLocaleString()}개 모형 · 유효 ${compareDisplayed.filter(m=>m.slope!=null).length.toLocaleString()}개`);
+      Lab.text('compare-page',`${compareState.page+1} / ${pages}`);
+      E('compare-prev').disabled=compareState.page===0;
+      E('compare-next').disabled=compareState.page>=pages-1;
+    }
+    async function renderCompare(){
+      const ticket=++compareTicket;
+      const source=st.unit==='local_history'
+        ?await Lab.load('data/models_local_history.json')
+        :st.allYears
+          ?[...(await Promise.all(meta.years.map(y=>Lab.models(y,st.mode)))).flat(),...(await Lab.load('data/models_pooled.json'))]
+          :await Lab.models(st.year,st.mode);
+      if(ticket!==compareTicket)return;
+      const region=st.unit==='local_history'?`${st.province}|${st.district}`:st.unit==='provincial'?'전국':st.province;
+      compareRows=source.filter(m=>m.mode===st.mode && m.scope===st.unit &&
+        (compareState.allTypes||m.type===st.dtype) &&
+        (compareState.allRegions || m.region===region));
+      Lab.text('compare-table-summary',`${st.unit==='local_history'?'기초 시계열':st.allYears?'연도별 + 전체 통합':st.year+'년'} · ${st.mode==='before'?'개편 전':'개편 후'}`);
+      E('compare-all-regions').disabled=st.unit==='provincial';
+      buildComparedTable();
+    }
+    for(const [id,field] of [['compare-all-types','allTypes'],['compare-all-regions','allRegions']]){
+      E(id).addEventListener('change',()=>{compareState[field]=E(id).checked;compareState.page=0;renderCompare().catch(Lab.showError);});
+    }
+    E('compare-search').addEventListener('input',()=>{compareState.search=E('compare-search').value.toLowerCase().trim();compareState.page=0;buildComparedTable();});
+    E('compare-prev').addEventListener('click',()=>{compareState.page=Math.max(0,compareState.page-1);buildComparedTable();});
+    E('compare-next').addEventListener('click',()=>{compareState.page++;buildComparedTable();});
+    E('compare-toggle-raw').addEventListener('click',()=>{
+      const raw=E('compare-detail-raw');raw.hidden=!raw.hidden;
+      E('compare-toggle-raw').textContent=raw.hidden?'Raw 출력 펼치기':'Raw 출력 접기';
+    });
+    E('compare-export').addEventListener('click',()=>Lab.exportCsv('fiscal_disability_ols_models.csv',
+      ['연도','장애유형','분석단위','광역·기초지자체','재정자립도_개편전후','표본수','기울기','절편','결정계수R2','기울기p','회귀불가사유'],
+      compareDisplayed.map(m=>[m.year,m.type,m.scope,m.region,m.mode,m.n,m.slope,m.intercept,m.r2,m.p,m.warning])));
+    E('compare-detail-export').addEventListener('click',()=>{
+      if(compareSelected)Lab.exportCsv('fiscal_disability_selected_model_observations.csv',
+        ['연도','광역지자체','기초지자체','주민등록인구','해당장애유형등록인원','실제등록률(%)','재정자립도(0~1)','OLS예측등록률(%)','잔차(%p)'],compareObs);
+    });
+
     async function renderTrends(){
       if(st.unit==='local_history'){
         ['slope','intercept','r2','p'].forEach(key=>Lab.trend('trend-'+key,Array(9).fill(null),key,key));
@@ -137,6 +234,16 @@
       E('raw-output').textContent=model?.raw||model?.warning||'해당 회귀 결과가 없습니다.';
       Lab.text('raw-note',model?.raw?`텍스트 파일: raw/OLS_${st.unit==='local_history'?'local_history_'+st.mode:st.allYears?'pooled_'+st.mode:st.year+'_'+st.mode}.txt`:'유효 표본 부족 또는 X값 고정으로 OLS 결과가 없습니다.');
       renderScatter();renderTable();await renderTrends();
+      if(ticket!==sequence)return;
+      compareSelected=null;
+      E('compare-detail-export').disabled=true;
+      E('compare-toggle-raw').disabled=true;
+      E('compare-detail-raw').hidden=true;
+      E('compare-detail-observations').innerHTML='<tr><td colspan="9">회귀 통계표에서 모형을 선택하면 표시합니다.</td></tr>';
+      Lab.text('compare-detail-title','모형을 선택해 주세요');
+      Lab.text('compare-detail-hint','선택 조건의 회귀 통계표에서 Raw·관측치를 누르세요.');
+      Lab.text('compare-detail-source','');Lab.text('compare-detail-count','');
+      await renderCompare();
       if(ticket!==sequence)return;
     }
     await render();

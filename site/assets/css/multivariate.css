@@ -20,3 +20,13 @@
 .multi-table .model-link{cursor:pointer}
 @media(max-width:1140px){.multi-trends{grid-template-columns:repeat(2,minmax(0,1fr))}.double-plots{grid-template-columns:1fr}}
 @media(max-width:780px){.model-intro{grid-template-columns:1fr}.multi-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.multi-trends{grid-template-columns:1fr}.model-table-controls{align-items:start;flex-direction:column}.chart-multivariate{height:315px}}
+
+/* Three-dimensional OLS surface (Plotly GL3D, separate from Chart.js). */
+.multi-3d-panel{overflow:hidden}
+.multi-3d-heading{align-items:center;gap:16px}
+.multi-3d-controls{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.multi-3d-controls .switchlabel{font-size:12px;white-space:nowrap;color:#526277;cursor:pointer}
+.multi-3d-plot{height:560px;min-height:440px;width:100%;color:#718095;display:block}
+.multi-3d-note{line-height:1.8;margin-top:12px}
+.multi-3d-explanation{margin:5px 0 4px;padding:0}
+@media(max-width:780px){.multi-3d-plot{height:450px;min-height:380px}.multi-3d-heading{flex-direction:column;align-items:start}.multi-3d-controls{gap:12px}}

@@ -1,0 +1,8 @@
+/* Main fiscal × disability dashboard: model comparison detail. */
+#regression-comparison{margin-top:18px}
+#compare-model-rows tr:has(button):hover{background:#eaf8f4}
+#compare-model-rows tr.selected-model{background:#e0f5f1}
+#compare-detail-panel .raw-panel pre{max-height:520px;overflow:auto;white-space:pre;background:#101a29;color:#c8dedb;padding:20px;border-radius:8px;line-height:1.55;font-size:11px}
+#compare-detail-panel .detail-subtitle{font-size:13px;color:#344a61;margin:21px 0 12px}
+#compare-model-rows td{font-variant-numeric:tabular-nums}
+@media(max-width:780px){#compare-detail-panel .panel-title-row{flex-wrap:wrap}}
