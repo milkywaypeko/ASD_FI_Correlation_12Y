@@ -208,14 +208,9 @@
     Lab.text('multi-raw-file',m.raw?`전체 Raw 텍스트: ${rawFilename(m)}`:'이 모형은 원본 Raw가 생성되지 않았습니다.');
     if(expanded)E('multi-raw').scrollIntoView({block:'nearest',behavior:'smooth'});
   }
-  function refresh3d(){
-    if(typeof Multi3D!=='undefined') Multi3D.render({rows:visibleRows,model:current,type:state.dtype,mode:state.mode,
-      showPlane:E('multi-3d-plane').checked,colorByYear:E('multi-3d-coloryear').checked});
-  }
   function refresh(){
     visibleRows=getData();current=obtainCurrent();
     stats();scatter('fiscal','multi-fiscal-scatter');scatter('birth','multi-birth-scatter');
-    refresh3d();
     trends();buildTable();observations();showRaw(current||{scope:state.scope,region:currentRegion(),year:actualPeriod(),mode:state.mode,type:state.dtype,warning:'모형이 없습니다.'},false);
   }
   try{
@@ -246,8 +241,6 @@
     });
     E('multi-district').addEventListener('change',()=>{state.district=E('multi-district').value;state.page=0;refresh();});
     E('multi-mode').addEventListener('change',()=>{state.mode=E('multi-mode').value;state.page=0;refresh();});
-    E('multi-3d-plane').addEventListener('change',refresh3d);
-    E('multi-3d-coloryear').addEventListener('change',refresh3d);
     E('multi-year').addEventListener('input',()=>{state.year=Number(E('multi-year').value);state.page=0;sync();refresh();});
     E('multi-all-years').addEventListener('change',()=>{state.allYears=E('multi-all-years').checked;state.page=0;sync();refresh();});
     E('multi-table-all').addEventListener('change',()=>{state.tableAll=E('multi-table-all').checked;state.page=0;buildTable();});
